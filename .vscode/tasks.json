@@ -1,0 +1,721 @@
+{
+  "version": "2.0.0",
+  "options": {
+    "cwd": "${workspaceFolder}"
+  },
+  "presentation": {
+    "echo": true,
+    "reveal": "always",
+    "focus": false,
+    "panel": "shared",
+    "showReuseMessage": false,
+    "clear": true
+  },
+  "tasks": [
+    {
+      "label": "windows-i386-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset windows-i386-debug && cmake --build --preset windows-i386-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "windows-i386-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset windows-i386-release && cmake --build --preset windows-i386-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "windows-x86_64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset windows-x86_64-debug && cmake --build --preset windows-x86_64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "windows-x86_64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset windows-x86_64-release && cmake --build --preset windows-x86_64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "windows-aarch64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset windows-aarch64-debug && cmake --build --preset windows-aarch64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "windows-aarch64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset windows-aarch64-release && cmake --build --preset windows-aarch64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "windows-armv7a-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset windows-armv7a-debug && cmake --build --preset windows-armv7a-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "windows-armv7a-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset windows-armv7a-release && cmake --build --preset windows-armv7a-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-i386-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-i386-debug && cmake --build --preset linux-i386-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-i386-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-i386-release && cmake --build --preset linux-i386-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-x86_64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-x86_64-debug && cmake --build --preset linux-x86_64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-x86_64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-x86_64-release && cmake --build --preset linux-x86_64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-armv7a-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-armv7a-debug && cmake --build --preset linux-armv7a-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-armv7a-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-armv7a-release && cmake --build --preset linux-armv7a-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-aarch64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-aarch64-debug && cmake --build --preset linux-aarch64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-aarch64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-aarch64-release && cmake --build --preset linux-aarch64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-riscv32-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-riscv32-debug && cmake --build --preset linux-riscv32-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-riscv32-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-riscv32-release && cmake --build --preset linux-riscv32-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-riscv64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-riscv64-debug && cmake --build --preset linux-riscv64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-riscv64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-riscv64-release && cmake --build --preset linux-riscv64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-mips64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-mips64-debug && cmake --build --preset linux-mips64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "linux-mips64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset linux-mips64-release && cmake --build --preset linux-mips64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "macos-x86_64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset macos-x86_64-debug && cmake --build --preset macos-x86_64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "macos-x86_64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset macos-x86_64-release && cmake --build --preset macos-x86_64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "macos-aarch64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset macos-aarch64-debug && cmake --build --preset macos-aarch64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "macos-aarch64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset macos-aarch64-release && cmake --build --preset macos-aarch64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "uefi-x86_64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset uefi-x86_64-debug && cmake --build --preset uefi-x86_64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "uefi-x86_64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset uefi-x86_64-release && cmake --build --preset uefi-x86_64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "uefi-aarch64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset uefi-aarch64-debug && cmake --build --preset uefi-aarch64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "uefi-aarch64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset uefi-aarch64-release && cmake --build --preset uefi-aarch64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "solaris-i386-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset solaris-i386-debug && cmake --build --preset solaris-i386-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "solaris-i386-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset solaris-i386-release && cmake --build --preset solaris-i386-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "solaris-x86_64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset solaris-x86_64-debug && cmake --build --preset solaris-x86_64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "solaris-x86_64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset solaris-x86_64-release && cmake --build --preset solaris-x86_64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "solaris-aarch64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset solaris-aarch64-debug && cmake --build --preset solaris-aarch64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "solaris-aarch64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset solaris-aarch64-release && cmake --build --preset solaris-aarch64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "freebsd-i386-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset freebsd-i386-debug && cmake --build --preset freebsd-i386-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "freebsd-i386-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset freebsd-i386-release && cmake --build --preset freebsd-i386-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "freebsd-x86_64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset freebsd-x86_64-debug && cmake --build --preset freebsd-x86_64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "freebsd-x86_64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset freebsd-x86_64-release && cmake --build --preset freebsd-x86_64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "freebsd-aarch64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset freebsd-aarch64-debug && cmake --build --preset freebsd-aarch64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "freebsd-aarch64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset freebsd-aarch64-release && cmake --build --preset freebsd-aarch64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "freebsd-riscv64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset freebsd-riscv64-debug && cmake --build --preset freebsd-riscv64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "freebsd-riscv64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset freebsd-riscv64-release && cmake --build --preset freebsd-riscv64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "android-x86_64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset android-x86_64-debug && cmake --build --preset android-x86_64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "android-x86_64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset android-x86_64-release && cmake --build --preset android-x86_64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "android-armv7a-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset android-armv7a-debug && cmake --build --preset android-armv7a-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "android-armv7a-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset android-armv7a-release && cmake --build --preset android-armv7a-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "android-aarch64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset android-aarch64-debug && cmake --build --preset android-aarch64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "android-aarch64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset android-aarch64-release && cmake --build --preset android-aarch64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "ios-aarch64-debug",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset ios-aarch64-debug && cmake --build --preset ios-aarch64-debug"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "ios-aarch64-release",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && cmake --preset ios-aarch64-release && cmake --build --preset ios-aarch64-release"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": "build"
+    },
+    {
+      "label": "Build All Windows",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "windows-i386-release",
+        "windows-x86_64-release",
+        "windows-aarch64-release",
+        "windows-armv7a-release"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All Linux",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "linux-i386-release",
+        "linux-x86_64-release",
+        "linux-armv7a-release",
+        "linux-aarch64-release",
+        "linux-riscv32-release",
+        "linux-riscv64-release",
+        "linux-mips64-release"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All macOS",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "macos-x86_64-release",
+        "macos-aarch64-release"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All UEFI",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "uefi-x86_64-release",
+        "uefi-aarch64-release"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All Solaris",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "solaris-i386-release",
+        "solaris-x86_64-release",
+        "solaris-aarch64-release"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All FreeBSD",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "freebsd-i386-release",
+        "freebsd-x86_64-release",
+        "freebsd-aarch64-release",
+        "freebsd-riscv64-release"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All Android",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "android-x86_64-release",
+        "android-armv7a-release",
+        "android-aarch64-release"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build All iOS",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "ios-aarch64-release"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run UEFI x86_64 (QEMU)",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && qemu-system-x86_64 -bios /usr/share/ovmf/OVMF.fd -drive file=fat:rw:build/release/uefi/x86_64,format=raw,if=ide,index=0 -m 512 -nographic -nic user,model=e1000 -no-reboot"
+      ],
+      "dependsOn": "uefi-x86_64-release",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Run UEFI aarch64 (QEMU)",
+      "type": "process",
+      "command": "wsl",
+      "args": [
+        "--", "bash", "-lc",
+        "cd \"$(wslpath '${workspaceFolder}')\" && qemu-system-aarch64 -M virt -cpu cortex-a72 -bios /usr/share/qemu-efi-aarch64/QEMU_EFI.fd -drive file=fat:rw:build/release/uefi/aarch64,format=raw,if=virtio -m 512 -nographic -nic user,model=virtio -no-reboot"
+      ],
+      "dependsOn": "uefi-aarch64-release",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Build All",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "Build All Windows",
+        "Build All Linux",
+        "Build All macOS",
+        "Build All UEFI",
+        "Build All Solaris",
+        "Build All FreeBSD",
+        "Build All Android",
+        "Build All iOS"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

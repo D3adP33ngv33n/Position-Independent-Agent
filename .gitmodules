@@ -1,0 +1,3 @@
+[submodule "runtime"]
+	path = runtime
+	url = https://github.com/mrzaxaryan/Position-Independent-Runtime.git

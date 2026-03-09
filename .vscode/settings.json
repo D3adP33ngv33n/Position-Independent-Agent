@@ -1,0 +1,14 @@
+{
+    // Force Clang as default compiler for cpptools
+    "C_Cpp.default.compilerPath": "C:/Program Files/LLVM/bin/clang.exe",
+    "C_Cpp.default.cStandard": "c17",
+    "C_Cpp.default.cppStandard": "c++23",
+    "C_Cpp.configurationWarnings": "enabled",
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.formatting": "clangFormat",
+    "lldb-dap.executable-path": "/usr/bin/lldb-dap",
+    "files.associations": {
+        "*.h": "cpp",
+        "*.cc": "cpp"
+    }
+}
