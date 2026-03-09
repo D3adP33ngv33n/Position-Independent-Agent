@@ -58,7 +58,7 @@ This project shares its CMake build system, VSCode configuration, and preset str
 ├── src/
 │   ├── main.cc             # Entry point and WebSocket message loop
 │   ├── commandsHandler.cc  # Command handler implementations
-│   └── terminal.h          # Command types and handler declarations
+│   └── commands.h          # Command types and handler declarations
 └── runtime/                # PIR submodule (build system + runtime library)
 ```
 
@@ -98,5 +98,5 @@ Computes a SHA-256 hash of a file chunk.
 
 The agent UUID and server URL are configured in the source:
 
-- **Agent UUID**: Defined in `src/terminal.h` (`AGENT_UUID`)
+- **Agent UUID**: Defined in `src/commands.h` (`AGENT_UUID`)
 - **Server URL**: Defined in `src/main.cc` (WebSocket endpoint)

