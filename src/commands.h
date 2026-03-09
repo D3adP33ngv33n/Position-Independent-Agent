@@ -13,9 +13,9 @@ enum CommandType : UINT8
 
 enum StatusCode : UINT32
 {
-    Success = 0,
-    Error = 1,
-    UnknownCommand = 2
+    StatusSuccess = 0,
+    StatusError = 1,
+    StatusUnknownCommand = 2
 };
 
 #define AGENT_UUID (PCCHAR) "12345678-9abc-def0-1234-56789abcdef0"_embed

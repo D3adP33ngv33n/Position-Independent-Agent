@@ -27,14 +27,14 @@ VOID Handle_GetUUIDCommand([[maybe_unused]] PCHAR command, [[maybe_unused]] USIZ
     if (!result.IsOk())
     {
         LOG_ERROR("Failed to parse agent UUID string");
-        WriteErrorResponse(response, responseLength, StatusCode::Error);
+        WriteErrorResponse(response, responseLength, StatusCode::StatusError);
         return;
     }
 
     UUID uuid = result.Value();
     *responseLength += sizeof(UUID);
     *response = new CHAR[*responseLength];
-    *(PUINT32)*response = StatusCode::Success;
+    *(PUINT32)*response = StatusCode::StatusSuccess;
     Memory::Copy(*response + sizeof(UINT32), &uuid, sizeof(UUID));
 }
 
@@ -47,7 +47,7 @@ VOID Handle_GetDirectoryContentCommand([[maybe_unused]] PCHAR command, [[maybe_u
     if (!result.IsOk())
     {
         LOG_ERROR("Invalid directory path: %ws", directoryPath);
-        WriteErrorResponse(response, responseLength, StatusCode::Error);
+        WriteErrorResponse(response, responseLength, StatusCode::StatusError);
         return;
     }
 
@@ -57,7 +57,7 @@ VOID Handle_GetDirectoryContentCommand([[maybe_unused]] PCHAR command, [[maybe_u
     if (!entries.Init())
     {
         LOG_ERROR("Failed to allocate directory entry buffer");
-        WriteErrorResponse(response, responseLength, StatusCode::Error);
+        WriteErrorResponse(response, responseLength, StatusCode::StatusError);
         return;
     }
 
@@ -70,7 +70,7 @@ VOID Handle_GetDirectoryContentCommand([[maybe_unused]] PCHAR command, [[maybe_u
         if (!entries.Add(entry))
         {
             LOG_ERROR("Failed to grow directory entry buffer");
-            WriteErrorResponse(response, responseLength, StatusCode::Error);
+            WriteErrorResponse(response, responseLength, StatusCode::StatusError);
             return;
         }
     }
@@ -79,7 +79,7 @@ VOID Handle_GetDirectoryContentCommand([[maybe_unused]] PCHAR command, [[maybe_u
     *responseLength = sizeof(UINT32) + sizeof(UINT64) + (USIZE)(entryCount * sizeof(DirectoryEntry));
     *response = new CHAR[*responseLength];
 
-    *(PUINT32)*response = StatusCode::Success;
+    *(PUINT32)*response = StatusCode::StatusSuccess;
     Memory::Copy(*response + sizeof(UINT32), &entryCount, sizeof(UINT64));
     Memory::Copy(*response + sizeof(UINT32) + sizeof(UINT64), entries.Data, (USIZE)(entryCount * sizeof(DirectoryEntry)));
 }
@@ -95,7 +95,7 @@ VOID Handle_GetFileContentCommand([[maybe_unused]] PCHAR command, [[maybe_unused
     if (!openResult)
     {
         LOG_ERROR("Failed to open file: %ws", filePath);
-        WriteErrorResponse(response, responseLength, StatusCode::Error);
+        WriteErrorResponse(response, responseLength, StatusCode::StatusError);
         return;
     }
 
@@ -108,7 +108,7 @@ VOID Handle_GetFileContentCommand([[maybe_unused]] PCHAR command, [[maybe_unused
     auto readResult = file.Read(Span<UINT8>((UINT8 *)(*response + responseOffset), (USIZE)readCount));
     UINT32 bytesRead = readResult ? readResult.Value() : 0;
 
-    *(PUINT32)*response = StatusCode::Success;
+    *(PUINT32)*response = StatusCode::StatusSuccess;
     *(PUINT64)(*response + sizeof(UINT32)) = bytesRead;
 }
 
@@ -123,7 +123,7 @@ VOID Handle_GetFileChunkHashCommand([[maybe_unused]] PCHAR command, [[maybe_unus
     if (!openResult)
     {
         LOG_ERROR("Failed to open file: %ws", filePath);
-        WriteErrorResponse(response, responseLength, StatusCode::Error);
+        WriteErrorResponse(response, responseLength, StatusCode::StatusError);
         return;
     }
 
@@ -154,7 +154,7 @@ VOID Handle_GetFileChunkHashCommand([[maybe_unused]] PCHAR command, [[maybe_unus
     UINT8 digest[SHA256_DIGEST_SIZE];
     sha256.Final(Span<UINT8, SHA256_DIGEST_SIZE>(digest));
 
-    *(PUINT32)*response = StatusCode::Success;
+    *(PUINT32)*response = StatusCode::StatusSuccess;
     Memory::Copy(*response + sizeof(UINT32), digest, SHA256_DIGEST_SIZE);
     LOG_INFO("File chunk hash computed successfully for %llu bytes read", totalRead);
 }

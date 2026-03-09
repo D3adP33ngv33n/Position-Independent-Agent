@@ -51,7 +51,7 @@ INT32 start()
             {
                 LOG_ERROR("Unknown command type received: %d", (INT32)commandType);
                 response = new CHAR[responseLength];
-                *(PUINT32)response = StatusCode::UnknownCommand;
+                *(PUINT32)response = StatusCode::StatusUnknownCommand;
             }
 
             auto writeResult = wsClient.Write(Span<const CHAR>(response, responseLength), WebSocketOpcode::Binary);
