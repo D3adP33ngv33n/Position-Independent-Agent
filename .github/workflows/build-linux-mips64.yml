@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  LLVM_VERSION: "22.1.0"
+  LLVM_VERSION: "20"
 
 jobs:
   build:
@@ -28,19 +28,12 @@ jobs:
         id: cache-llvm
         uses: actions/cache@v4
         with:
-          path: /opt/llvm
-          key: llvm-${{ env.LLVM_VERSION }}-linux-x64
+          path: /usr/lib/llvm-${{ env.LLVM_VERSION }}
+          key: llvm-${{ env.LLVM_VERSION }}-apt-jammy
 
       - name: Install LLVM
         if: steps.cache-llvm.outputs.cache-hit != 'true'
-        run: |
-          set -e
-          TARBALL="LLVM-${{ env.LLVM_VERSION }}-Linux-X64.tar.xz"
-          URL="https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ env.LLVM_VERSION }}/${TARBALL}"
-          wget -q "$URL"
-          sudo mkdir -p /opt/llvm
-          sudo tar xf "$TARBALL" -C /opt/llvm --strip-components=1
-          rm "$TARBALL"
+        run: wget -qO- https://apt.llvm.org/llvm.sh | sudo bash -s -- ${{ env.LLVM_VERSION }}
 
       - name: Install build tools
         run: |
@@ -48,7 +41,7 @@ jobs:
           sudo apt-get install -y ninja-build cmake
 
       - name: Add LLVM to PATH
-        run: echo "/opt/llvm/bin" >> $GITHUB_PATH
+        run: echo "/usr/lib/llvm-${{ env.LLVM_VERSION }}/bin" >> $GITHUB_PATH
 
       - name: Build all optimization levels
         run: |
