@@ -283,37 +283,43 @@ This project shares its CMake build system, VSCode configuration, and preset str
 
 All commands use a binary protocol over WebSocket. Each message starts with a `UINT8` command type byte followed by command-specific payload. Every response begins with a `UINT32` status code (`0` = success, non-zero = error).
 
-### `GetUUID` (0x00)
+### `GetSystemInfo` (0x00)
 
-Returns the agent's unique identifier.
+Returns system identification info for the target host.
 
 - **Request**: No payload (command type byte only)
-- **Response**: `UINT32 status` + `UUID` (16 bytes)
+- **Response**: `UINT32 status` + `SystemInfo`
+
+`SystemInfo` layout (packed):
+
+| Field          | Type        | Description                                      |
+|----------------|-------------|--------------------------------------------------|
+| `MachineUUID`  | `UUID` (16B)| Hardware/OS-level unique identifier               |
+| `Hostname`     | `CHAR[256]` | Machine hostname (from env or `/etc/hostname`)    |
+| `Architecture` | `CHAR[32]`  | CPU architecture (`x86_64`, `aarch64`, etc.)      |
+| `Platform`     | `CHAR[32]`  | OS platform (`windows`, `linux`, `macos`, etc.)   |
 
 ### `GetDirectoryContent` (0x01)
 
 Lists all entries in a directory (excluding `.` and `..`).
 
-- **Request**: `WCHAR[] directoryPath` (null-terminated wide string)
+- **Request**: `CHAR16[] directoryPath` (null-terminated UTF-16LE string)
 - **Response**: `UINT32 status` + `UINT64 entryCount` + `DirectoryEntry[entryCount]`
 
 ### `GetFileContent` (0x02)
 
 Reads file content at a specified offset.
 
-- **Request**: `UINT64 readCount` + `UINT64 offset` + `WCHAR[] filePath`
+- **Request**: `UINT64 readCount` + `UINT64 offset` + `CHAR16[] filePath`
 - **Response**: `UINT32 status` + `UINT64 bytesRead` + `UINT8[bytesRead]` (file data)
 
 ### `GetFileChunkHash` (0x03)
 
 Computes a SHA-256 hash of a file chunk.
 
-- **Request**: `UINT64 chunkSize` + `UINT64 offset` + `WCHAR[] filePath`
+- **Request**: `UINT64 chunkSize` + `UINT64 offset` + `CHAR16[] filePath`
 - **Response**: `UINT32 status` + `UINT8[32]` (SHA-256 digest)
 
 ## Configuration
 
-The agent UUID and server URL are configured in the source:
-
-- **Agent UUID**: Defined in `src/commands.h` (`AGENT_UUID`)
 - **Server URL**: Defined in `src/main.cc` (WebSocket endpoint)
