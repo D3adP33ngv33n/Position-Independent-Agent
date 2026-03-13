@@ -609,6 +609,10 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
         // Set the size of the packet and the response
         *response = packet;
         *responseLength = packetSize;
+        *(PUINT32)*response = StatusCode::StatusSuccess;
+
+        // clean up resources used for contour detection
+        contours.Free();
     }
 
     LOG_INFO("GetScreenshot command handled successfully with resolution %ux%u", device.Width, device.Height);
