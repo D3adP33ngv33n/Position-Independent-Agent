@@ -649,10 +649,9 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
                 packetSize += jpegBuffer.size + sizeof(rect.x) + sizeof(rect.y) + sizeof(rect.sizeOfData);
 
                 // Reallocate memory for the packet to hold the new rectangle data
-                auto oldPacket = packet;
                 auto newPacket = new CHAR[packetSize];
-                Memory::Copy(newPacket, oldPacket, offset);
-                delete[] oldPacket;
+                Memory::Copy(newPacket, packet, offset);
+                delete[] packet;
                 packet = newPacket;
 
                 LOG_INFO("Memory allocated.");
