@@ -623,7 +623,7 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
                     WriteErrorResponse(response, responseLength, StatusCode::StatusError);
                     return;
                 }
-                LOG_INFO("Rectangle encoded with size: %d.", jpegBuffer.size);
+                LOG_INFO("Rectangle encoded with size: %u.", jpegBuffer.size);
 
                 LOG_INFO("Reallocating memory for packet.");
                 Rectangle rect((UINT32)minX, (UINT32)minY, jpegBuffer.size, jpegBuffer.outputBuffer);
