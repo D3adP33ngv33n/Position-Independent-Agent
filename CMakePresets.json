@@ -13,10 +13,17 @@
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++",
-        "APP_DIR": "src"
+        "CMAKE_CXX_COMPILER": "clang++"
       }
     },
+
+    { "name": "app-tests",  "hidden": true, "cacheVariables": { "BUILD_TESTS": "ON", "ENABLE_LOGGING": "ON", "PIR_LOG_LEVEL": "STATUS" } },
+
+    { "name": "logging-on",  "hidden": true, "cacheVariables": { "ENABLE_LOGGING": "ON" } },
+    { "name": "logging-off", "hidden": true, "cacheVariables": { "ENABLE_LOGGING": "OFF" } },
+    { "name": "log-quiet",   "hidden": true, "cacheVariables": { "PIR_LOG_LEVEL": "QUIET" } },
+    { "name": "log-verbose", "hidden": true, "cacheVariables": { "PIR_LOG_LEVEL": "VERBOSE" } },
+    { "name": "log-debug",   "hidden": true, "cacheVariables": { "PIR_LOG_LEVEL": "DEBUG" } },
 
     { "name": "platform-windows", "hidden": true, "cacheVariables": { "PLATFORM": "windows" } },
     { "name": "platform-linux",   "hidden": true, "cacheVariables": { "PLATFORM": "linux" } },
@@ -39,326 +46,375 @@
     { "name": "type-release", "hidden": true, "cacheVariables": { "BUILD_TYPE": "release", "OPTIMIZATION_LEVEL": "Oz" } },
 
     {
+      "name": "docs",
+      "displayName": "Documentation",
+      "description": "Build Doxygen documentation (no compiler required)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/docs/cmake",
+      "cacheVariables": { "BUILD_DOCS": "ON" }
+    },
+
+    {
       "name": "windows-i386-debug",
       "displayName": "Windows i386 (Debug)",
-      "inherits": ["base", "platform-windows", "arch-i386", "type-debug"],
+      "inherits": ["base","platform-windows", "arch-i386", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/windows/i386/cmake"
     },
     {
       "name": "windows-i386-release",
       "displayName": "Windows i386 (Release)",
-      "inherits": ["base", "platform-windows", "arch-i386", "type-release"],
+      "inherits": ["base","platform-windows", "arch-i386", "type-release"],
       "binaryDir": "${sourceDir}/build/release/windows/i386/cmake"
     },
     {
       "name": "windows-x86_64-debug",
       "displayName": "Windows x86_64 (Debug)",
-      "inherits": ["base", "platform-windows", "arch-x86_64", "type-debug"],
+      "inherits": ["base","platform-windows", "arch-x86_64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/windows/x86_64/cmake"
     },
     {
       "name": "windows-x86_64-release",
       "displayName": "Windows x86_64 (Release)",
-      "inherits": ["base", "platform-windows", "arch-x86_64", "type-release"],
+      "inherits": ["base","platform-windows", "arch-x86_64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/windows/x86_64/cmake"
     },
     {
       "name": "windows-armv7a-debug",
       "displayName": "Windows ARMv7-A (Debug)",
-      "inherits": ["base", "platform-windows", "arch-armv7a", "type-debug"],
+      "inherits": ["base","platform-windows", "arch-armv7a", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/windows/armv7a/cmake"
     },
     {
       "name": "windows-armv7a-release",
       "displayName": "Windows ARMv7-A (Release)",
-      "inherits": ["base", "platform-windows", "arch-armv7a", "type-release"],
+      "inherits": ["base","platform-windows", "arch-armv7a", "type-release"],
       "binaryDir": "${sourceDir}/build/release/windows/armv7a/cmake"
     },
     {
       "name": "windows-aarch64-debug",
       "displayName": "Windows AArch64 (Debug)",
-      "inherits": ["base", "platform-windows", "arch-aarch64", "type-debug"],
+      "inherits": ["base","platform-windows", "arch-aarch64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/windows/aarch64/cmake"
     },
     {
       "name": "windows-aarch64-release",
       "displayName": "Windows AArch64 (Release)",
-      "inherits": ["base", "platform-windows", "arch-aarch64", "type-release"],
+      "inherits": ["base","platform-windows", "arch-aarch64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/windows/aarch64/cmake"
     },
 
     {
       "name": "linux-i386-debug",
       "displayName": "Linux i386 (Debug)",
-      "inherits": ["base", "platform-linux", "arch-i386", "type-debug"],
+      "inherits": ["base","platform-linux", "arch-i386", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/linux/i386/cmake"
     },
     {
       "name": "linux-i386-release",
       "displayName": "Linux i386 (Release)",
-      "inherits": ["base", "platform-linux", "arch-i386", "type-release"],
+      "inherits": ["base","platform-linux", "arch-i386", "type-release"],
       "binaryDir": "${sourceDir}/build/release/linux/i386/cmake"
     },
     {
       "name": "linux-x86_64-debug",
       "displayName": "Linux x86_64 (Debug)",
-      "inherits": ["base", "platform-linux", "arch-x86_64", "type-debug"],
+      "inherits": ["base","platform-linux", "arch-x86_64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/linux/x86_64/cmake"
     },
     {
       "name": "linux-x86_64-release",
       "displayName": "Linux x86_64 (Release)",
-      "inherits": ["base", "platform-linux", "arch-x86_64", "type-release"],
+      "inherits": ["base","platform-linux", "arch-x86_64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/linux/x86_64/cmake"
     },
     {
       "name": "linux-armv7a-debug",
       "displayName": "Linux ARMv7-A (Debug)",
-      "inherits": ["base", "platform-linux", "arch-armv7a", "type-debug"],
+      "inherits": ["base","platform-linux", "arch-armv7a", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/linux/armv7a/cmake"
     },
     {
       "name": "linux-armv7a-release",
       "displayName": "Linux ARMv7-A (Release)",
-      "inherits": ["base", "platform-linux", "arch-armv7a", "type-release"],
+      "inherits": ["base","platform-linux", "arch-armv7a", "type-release"],
       "binaryDir": "${sourceDir}/build/release/linux/armv7a/cmake"
     },
     {
       "name": "linux-aarch64-debug",
       "displayName": "Linux AArch64 (Debug)",
-      "inherits": ["base", "platform-linux", "arch-aarch64", "type-debug"],
+      "inherits": ["base","platform-linux", "arch-aarch64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/linux/aarch64/cmake"
     },
     {
       "name": "linux-aarch64-release",
       "displayName": "Linux AArch64 (Release)",
-      "inherits": ["base", "platform-linux", "arch-aarch64", "type-release"],
+      "inherits": ["base","platform-linux", "arch-aarch64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/linux/aarch64/cmake"
     },
     {
       "name": "linux-riscv32-debug",
       "displayName": "Linux RISC-V 32 (Debug)",
-      "inherits": ["base", "platform-linux", "arch-riscv32", "type-debug"],
+      "inherits": ["base","platform-linux", "arch-riscv32", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/linux/riscv32/cmake"
     },
     {
       "name": "linux-riscv32-release",
       "displayName": "Linux RISC-V 32 (Release)",
-      "inherits": ["base", "platform-linux", "arch-riscv32", "type-release"],
+      "inherits": ["base","platform-linux", "arch-riscv32", "type-release"],
       "binaryDir": "${sourceDir}/build/release/linux/riscv32/cmake"
     },
     {
       "name": "linux-riscv64-debug",
       "displayName": "Linux RISC-V 64 (Debug)",
-      "inherits": ["base", "platform-linux", "arch-riscv64", "type-debug"],
+      "inherits": ["base","platform-linux", "arch-riscv64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/linux/riscv64/cmake"
     },
     {
       "name": "linux-riscv64-release",
       "displayName": "Linux RISC-V 64 (Release)",
-      "inherits": ["base", "platform-linux", "arch-riscv64", "type-release"],
+      "inherits": ["base","platform-linux", "arch-riscv64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/linux/riscv64/cmake"
     },
     {
       "name": "linux-mips64-debug",
       "displayName": "Linux MIPS64 (Debug)",
-      "inherits": ["base", "platform-linux", "arch-mips64", "type-debug"],
+      "inherits": ["base","platform-linux", "arch-mips64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/linux/mips64/cmake"
     },
     {
       "name": "linux-mips64-release",
       "displayName": "Linux MIPS64 (Release)",
-      "inherits": ["base", "platform-linux", "arch-mips64", "type-release"],
+      "inherits": ["base","platform-linux", "arch-mips64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/linux/mips64/cmake"
     },
 
     {
       "name": "macos-x86_64-debug",
       "displayName": "macOS x86_64 (Debug)",
-      "inherits": ["base", "platform-macos", "arch-x86_64", "type-debug"],
+      "inherits": ["base","platform-macos", "arch-x86_64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/macos/x86_64/cmake"
     },
     {
       "name": "macos-x86_64-release",
       "displayName": "macOS x86_64 (Release)",
-      "inherits": ["base", "platform-macos", "arch-x86_64", "type-release"],
+      "inherits": ["base","platform-macos", "arch-x86_64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/macos/x86_64/cmake"
     },
     {
       "name": "macos-aarch64-debug",
       "displayName": "macOS AArch64 (Debug)",
-      "inherits": ["base", "platform-macos", "arch-aarch64", "type-debug"],
+      "inherits": ["base","platform-macos", "arch-aarch64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/macos/aarch64/cmake"
     },
     {
       "name": "macos-aarch64-release",
       "displayName": "macOS AArch64 (Release)",
-      "inherits": ["base", "platform-macos", "arch-aarch64", "type-release"],
+      "inherits": ["base","platform-macos", "arch-aarch64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/macos/aarch64/cmake"
     },
 
     {
       "name": "uefi-x86_64-debug",
       "displayName": "UEFI x86_64 (Debug)",
-      "inherits": ["base", "platform-uefi", "arch-x86_64", "type-debug"],
+      "inherits": ["base","platform-uefi", "arch-x86_64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/uefi/x86_64/cmake"
     },
     {
       "name": "uefi-x86_64-release",
       "displayName": "UEFI x86_64 (Release)",
-      "inherits": ["base", "platform-uefi", "arch-x86_64", "type-release"],
+      "inherits": ["base","platform-uefi", "arch-x86_64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/uefi/x86_64/cmake"
     },
     {
       "name": "uefi-aarch64-debug",
       "displayName": "UEFI AArch64 (Debug)",
-      "inherits": ["base", "platform-uefi", "arch-aarch64", "type-debug"],
+      "inherits": ["base","platform-uefi", "arch-aarch64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/uefi/aarch64/cmake"
     },
     {
       "name": "uefi-aarch64-release",
       "displayName": "UEFI AArch64 (Release)",
-      "inherits": ["base", "platform-uefi", "arch-aarch64", "type-release"],
+      "inherits": ["base","platform-uefi", "arch-aarch64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/uefi/aarch64/cmake"
     },
 
     {
       "name": "solaris-i386-debug",
       "displayName": "Solaris i386 (Debug)",
-      "inherits": ["base", "platform-solaris", "arch-i386", "type-debug"],
+      "inherits": ["base","platform-solaris", "arch-i386", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/solaris/i386/cmake"
     },
     {
       "name": "solaris-i386-release",
       "displayName": "Solaris i386 (Release)",
-      "inherits": ["base", "platform-solaris", "arch-i386", "type-release"],
+      "inherits": ["base","platform-solaris", "arch-i386", "type-release"],
       "binaryDir": "${sourceDir}/build/release/solaris/i386/cmake"
     },
     {
       "name": "solaris-x86_64-debug",
       "displayName": "Solaris x86_64 (Debug)",
-      "inherits": ["base", "platform-solaris", "arch-x86_64", "type-debug"],
+      "inherits": ["base","platform-solaris", "arch-x86_64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/solaris/x86_64/cmake"
     },
     {
       "name": "solaris-x86_64-release",
       "displayName": "Solaris x86_64 (Release)",
-      "inherits": ["base", "platform-solaris", "arch-x86_64", "type-release"],
+      "inherits": ["base","platform-solaris", "arch-x86_64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/solaris/x86_64/cmake"
     },
     {
       "name": "solaris-aarch64-debug",
       "displayName": "Solaris AArch64 (Debug)",
-      "inherits": ["base", "platform-solaris", "arch-aarch64", "type-debug"],
+      "inherits": ["base","platform-solaris", "arch-aarch64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/solaris/aarch64/cmake"
     },
     {
       "name": "solaris-aarch64-release",
       "displayName": "Solaris AArch64 (Release)",
-      "inherits": ["base", "platform-solaris", "arch-aarch64", "type-release"],
+      "inherits": ["base","platform-solaris", "arch-aarch64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/solaris/aarch64/cmake"
     },
 
     {
       "name": "freebsd-i386-debug",
       "displayName": "FreeBSD i386 (Debug)",
-      "inherits": ["base", "platform-freebsd", "arch-i386", "type-debug"],
+      "inherits": ["base","platform-freebsd", "arch-i386", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/freebsd/i386/cmake"
     },
     {
       "name": "freebsd-i386-release",
       "displayName": "FreeBSD i386 (Release)",
-      "inherits": ["base", "platform-freebsd", "arch-i386", "type-release"],
+      "inherits": ["base","platform-freebsd", "arch-i386", "type-release"],
       "binaryDir": "${sourceDir}/build/release/freebsd/i386/cmake"
     },
     {
       "name": "freebsd-x86_64-debug",
       "displayName": "FreeBSD x86_64 (Debug)",
-      "inherits": ["base", "platform-freebsd", "arch-x86_64", "type-debug"],
+      "inherits": ["base","platform-freebsd", "arch-x86_64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/freebsd/x86_64/cmake"
     },
     {
       "name": "freebsd-x86_64-release",
       "displayName": "FreeBSD x86_64 (Release)",
-      "inherits": ["base", "platform-freebsd", "arch-x86_64", "type-release"],
+      "inherits": ["base","platform-freebsd", "arch-x86_64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/freebsd/x86_64/cmake"
     },
     {
       "name": "freebsd-aarch64-debug",
       "displayName": "FreeBSD AArch64 (Debug)",
-      "inherits": ["base", "platform-freebsd", "arch-aarch64", "type-debug"],
+      "inherits": ["base","platform-freebsd", "arch-aarch64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/freebsd/aarch64/cmake"
     },
     {
       "name": "freebsd-aarch64-release",
       "displayName": "FreeBSD AArch64 (Release)",
-      "inherits": ["base", "platform-freebsd", "arch-aarch64", "type-release"],
+      "inherits": ["base","platform-freebsd", "arch-aarch64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/freebsd/aarch64/cmake"
     },
     {
       "name": "freebsd-riscv64-debug",
       "displayName": "FreeBSD RISC-V 64 (Debug)",
-      "inherits": ["base", "platform-freebsd", "arch-riscv64", "type-debug"],
+      "inherits": ["base","platform-freebsd", "arch-riscv64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/freebsd/riscv64/cmake"
     },
     {
       "name": "freebsd-riscv64-release",
       "displayName": "FreeBSD RISC-V 64 (Release)",
-      "inherits": ["base", "platform-freebsd", "arch-riscv64", "type-release"],
+      "inherits": ["base","platform-freebsd", "arch-riscv64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/freebsd/riscv64/cmake"
     },
 
     {
       "name": "android-x86_64-debug",
       "displayName": "Android x86_64 (Debug)",
-      "inherits": ["base", "platform-android", "arch-x86_64", "type-debug"],
+      "inherits": ["base","platform-android", "arch-x86_64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/android/x86_64/cmake"
     },
     {
       "name": "android-x86_64-release",
       "displayName": "Android x86_64 (Release)",
-      "inherits": ["base", "platform-android", "arch-x86_64", "type-release"],
+      "inherits": ["base","platform-android", "arch-x86_64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/android/x86_64/cmake"
     },
     {
       "name": "android-armv7a-debug",
       "displayName": "Android ARMv7a (Debug)",
-      "inherits": ["base", "platform-android", "arch-armv7a", "type-debug"],
+      "inherits": ["base","platform-android", "arch-armv7a", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/android/armv7a/cmake"
     },
     {
       "name": "android-armv7a-release",
       "displayName": "Android ARMv7a (Release)",
-      "inherits": ["base", "platform-android", "arch-armv7a", "type-release"],
+      "inherits": ["base","platform-android", "arch-armv7a", "type-release"],
       "binaryDir": "${sourceDir}/build/release/android/armv7a/cmake"
     },
     {
       "name": "android-aarch64-debug",
       "displayName": "Android AArch64 (Debug)",
-      "inherits": ["base", "platform-android", "arch-aarch64", "type-debug"],
+      "inherits": ["base","platform-android", "arch-aarch64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/android/aarch64/cmake"
     },
     {
       "name": "android-aarch64-release",
       "displayName": "Android AArch64 (Release)",
-      "inherits": ["base", "platform-android", "arch-aarch64", "type-release"],
+      "inherits": ["base","platform-android", "arch-aarch64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/android/aarch64/cmake"
     },
 
     {
       "name": "ios-aarch64-debug",
       "displayName": "iOS AArch64 (Debug)",
-      "inherits": ["base", "platform-ios", "arch-aarch64", "type-debug"],
+      "inherits": ["base","platform-ios", "arch-aarch64", "type-debug"],
       "binaryDir": "${sourceDir}/build/debug/ios/aarch64/cmake"
     },
     {
       "name": "ios-aarch64-release",
       "displayName": "iOS AArch64 (Release)",
-      "inherits": ["base", "platform-ios", "arch-aarch64", "type-release"],
+      "inherits": ["base","platform-ios", "arch-aarch64", "type-release"],
       "binaryDir": "${sourceDir}/build/release/ios/aarch64/cmake"
-    }
+    },
+
+    { "name": "test-windows-i386-release",     "inherits": ["windows-i386-release",     "app-tests"] },
+    { "name": "test-windows-x86_64-release",  "inherits": ["windows-x86_64-release",  "app-tests"] },
+    { "name": "test-windows-armv7a-release",  "inherits": ["windows-armv7a-release",  "app-tests"] },
+    { "name": "test-windows-aarch64-release", "inherits": ["windows-aarch64-release", "app-tests"] },
+
+    { "name": "test-linux-i386-release",      "inherits": ["linux-i386-release",      "app-tests"] },
+    { "name": "test-linux-x86_64-release",    "inherits": ["linux-x86_64-release",    "app-tests"] },
+    { "name": "test-linux-armv7a-release",    "inherits": ["linux-armv7a-release",    "app-tests"] },
+    { "name": "test-linux-aarch64-release",   "inherits": ["linux-aarch64-release",   "app-tests"] },
+    { "name": "test-linux-riscv32-release",   "inherits": ["linux-riscv32-release",   "app-tests"] },
+    { "name": "test-linux-riscv64-release",   "inherits": ["linux-riscv64-release",   "app-tests"] },
+    { "name": "test-linux-mips64-release",    "inherits": ["linux-mips64-release",    "app-tests"] },
+
+    { "name": "test-macos-x86_64-release",    "inherits": ["macos-x86_64-release",    "app-tests"] },
+    { "name": "test-macos-aarch64-release",   "inherits": ["macos-aarch64-release",   "app-tests"] },
+
+    { "name": "test-uefi-x86_64-release",    "inherits": ["uefi-x86_64-release",    "app-tests"] },
+    { "name": "test-uefi-aarch64-release",   "inherits": ["uefi-aarch64-release",   "app-tests"] },
+
+    { "name": "test-solaris-i386-release",    "inherits": ["solaris-i386-release",    "app-tests"] },
+    { "name": "test-solaris-x86_64-release",  "inherits": ["solaris-x86_64-release",  "app-tests"] },
+    { "name": "test-solaris-aarch64-release", "inherits": ["solaris-aarch64-release", "app-tests"] },
+
+    { "name": "test-freebsd-i386-release",    "inherits": ["freebsd-i386-release",    "app-tests"] },
+    { "name": "test-freebsd-x86_64-release",  "inherits": ["freebsd-x86_64-release",  "app-tests"] },
+    { "name": "test-freebsd-aarch64-release", "inherits": ["freebsd-aarch64-release", "app-tests"] },
+    { "name": "test-freebsd-riscv64-release", "inherits": ["freebsd-riscv64-release", "app-tests"] },
+
+    { "name": "test-android-x86_64-release",  "inherits": ["android-x86_64-release",  "app-tests"] },
+    { "name": "test-android-armv7a-release",  "inherits": ["android-armv7a-release",  "app-tests"] },
+    { "name": "test-android-aarch64-release", "inherits": ["android-aarch64-release", "app-tests"] },
+
+    { "name": "test-ios-aarch64-release",     "inherits": ["ios-aarch64-release",     "app-tests"] },
+
+    { "name": "test-windows-x86_64-debug",  "inherits": ["windows-x86_64-debug",  "app-tests"] },
+    { "name": "test-linux-x86_64-debug",    "inherits": ["linux-x86_64-debug",    "app-tests"] },
+    { "name": "test-macos-aarch64-debug",   "inherits": ["macos-aarch64-debug",   "app-tests"] }
   ],
   "buildPresets": [
+    { "name": "docs",                    "configurePreset": "docs" },
+
     { "name": "windows-i386-debug",      "configurePreset": "windows-i386-debug" },
     { "name": "windows-i386-release",    "configurePreset": "windows-i386-release" },
     { "name": "windows-x86_64-debug",    "configurePreset": "windows-x86_64-debug" },
@@ -417,7 +473,45 @@
     { "name": "android-aarch64-release", "configurePreset": "android-aarch64-release" },
 
     { "name": "ios-aarch64-debug",       "configurePreset": "ios-aarch64-debug" },
-    { "name": "ios-aarch64-release",     "configurePreset": "ios-aarch64-release" }
+    { "name": "ios-aarch64-release",     "configurePreset": "ios-aarch64-release" },
+
+    { "name": "test-windows-i386-release",     "configurePreset": "test-windows-i386-release" },
+    { "name": "test-windows-x86_64-release",  "configurePreset": "test-windows-x86_64-release" },
+    { "name": "test-windows-armv7a-release",  "configurePreset": "test-windows-armv7a-release" },
+    { "name": "test-windows-aarch64-release", "configurePreset": "test-windows-aarch64-release" },
+
+    { "name": "test-linux-i386-release",      "configurePreset": "test-linux-i386-release" },
+    { "name": "test-linux-x86_64-release",    "configurePreset": "test-linux-x86_64-release" },
+    { "name": "test-linux-armv7a-release",    "configurePreset": "test-linux-armv7a-release" },
+    { "name": "test-linux-aarch64-release",   "configurePreset": "test-linux-aarch64-release" },
+    { "name": "test-linux-riscv32-release",   "configurePreset": "test-linux-riscv32-release" },
+    { "name": "test-linux-riscv64-release",   "configurePreset": "test-linux-riscv64-release" },
+    { "name": "test-linux-mips64-release",    "configurePreset": "test-linux-mips64-release" },
+
+    { "name": "test-macos-x86_64-release",    "configurePreset": "test-macos-x86_64-release" },
+    { "name": "test-macos-aarch64-release",   "configurePreset": "test-macos-aarch64-release" },
+
+    { "name": "test-uefi-x86_64-release",    "configurePreset": "test-uefi-x86_64-release" },
+    { "name": "test-uefi-aarch64-release",   "configurePreset": "test-uefi-aarch64-release" },
+
+    { "name": "test-solaris-i386-release",    "configurePreset": "test-solaris-i386-release" },
+    { "name": "test-solaris-x86_64-release",  "configurePreset": "test-solaris-x86_64-release" },
+    { "name": "test-solaris-aarch64-release", "configurePreset": "test-solaris-aarch64-release" },
+
+    { "name": "test-freebsd-i386-release",    "configurePreset": "test-freebsd-i386-release" },
+    { "name": "test-freebsd-x86_64-release",  "configurePreset": "test-freebsd-x86_64-release" },
+    { "name": "test-freebsd-aarch64-release", "configurePreset": "test-freebsd-aarch64-release" },
+    { "name": "test-freebsd-riscv64-release", "configurePreset": "test-freebsd-riscv64-release" },
+
+    { "name": "test-android-x86_64-release",  "configurePreset": "test-android-x86_64-release" },
+    { "name": "test-android-armv7a-release",  "configurePreset": "test-android-armv7a-release" },
+    { "name": "test-android-aarch64-release", "configurePreset": "test-android-aarch64-release" },
+
+    { "name": "test-ios-aarch64-release",     "configurePreset": "test-ios-aarch64-release" },
+
+    { "name": "test-windows-x86_64-debug",  "configurePreset": "test-windows-x86_64-debug" },
+    { "name": "test-linux-x86_64-debug",    "configurePreset": "test-linux-x86_64-debug" },
+    { "name": "test-macos-aarch64-debug",   "configurePreset": "test-macos-aarch64-debug" }
   ],
   "testPresets": [
     {
