@@ -371,16 +371,6 @@ VOID JpegCallback(PVOID context, PVOID data, INT32 size)
     jpegBuffer->offset += (UINT32)size;
 }
 
-VOID CopyRGBData(PRGB rect, UINT32 height, UINT32 width, Graphics &graphics, const ScreenDevice& device, UINT32 minX, UINT32 minY)
-{
-    for (UINT32 j = 0; j < height; j++)
-    {
-        for (UINT32 k = 0; k < width; k++)
-        {
-            rect[j * width + k] = graphics.currentScreenshot[(minY + j) * device.Width + minX + k]; // Copy the pixel data from the screenshot to the rectangle buffer
-        }
-    }
-}
 
 
 // Gets a screenshot of the specified display device
@@ -392,7 +382,6 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
 
     // Ensure the VNC context exists - create it if it doesn't, and validate the result
     if (context->vncContext == nullptr)
-        context->vncContext = new VNCContext();
         context->vncContext = new VNCContext();
 
     // Getting the device list
@@ -460,9 +449,7 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
                                           device.Width, device.Height,
                                           Span<UCHAR>(graphics.bidiff, device.Width * device.Height));
 
-        // Remove noises from bidiff
-        ImageProcessor::RemoveNoise(Span<UCHAR>(graphics.bidiff, device.Width * device.Height),
-                                    device.Width, device.Height);
+    // Remove noises from bidiff
     ImageProcessor::RemoveNoise(Span<UCHAR>(graphics.bidiff, device.Width * device.Height),
                                 device.Width, device.Height);
 
@@ -485,16 +472,7 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
     PContour contoursArray = contours.Contours;
     JpegBuffer jpegBuffer;
 
-        // Loop through the contours found to identify rectangles
-        for (INT32 i = 0; i < contours.ContourCount; i++)
-        {
-            // if it is not inner contour
-            // find its size
-            if (hierarchy[i].Parent == 1)
-            {
-                INT32 minX = contoursArray[i].Points[0].Col, minY = contoursArray[i].Points[0].Row, maxX = 0, maxY = 0;
-                // Loop through the points in the contour to find the min and max coordinates to create a rectangle
-                GetContourBounds(&contoursArray[i], minX, minY, maxX, maxY);
+    // Loop through the contours found to identify rectangles
     for (INT32 i = 0; i < contours.ContourCount; i++)
     {
         if (hierarchy[i].Parent != 1)
@@ -512,27 +490,9 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
             if (contoursArray[i].Points[j].Row > maxY) maxY = contoursArray[i].Points[j].Row;
         }
 
-                // Calculate the width and height of the rectangle
-                INT32 rectWidth = maxX - minX + 1;
-                INT32 rectHeight = maxY - minY + 1;
         INT32 rectWidth = maxX - minX + 1;
         INT32 rectHeight = maxY - minY + 1;
 
-                // Make strid dividable by 4 (needed for GdipCreateBitmapFromScan0)
-                if (rectWidth % 4 != 0)
-                    rectWidth -= rectWidth % 4;
-            
-                // Check if the rectangle is too small to be considered
-                if (rectHeight < 32 || rectWidth < 32)
-                    continue;
-                
-                countOfContour++;
-
-                LOG_INFO("Rectangle: x: %d, y: %d, width: %d, height: %d.", minX, minY, rectWidth, rectHeight);
-                LOG_INFO("Allocating memory for rectangle rgb data.");
-
-                // Allocate memory for the rectangle rgb data
-                rectScan0 = new RGB[rectHeight * rectWidth];
         if (rectWidth % 4 != 0)
             rectWidth -= rectWidth % 4;
         if (rectHeight < 32 || rectWidth < 32)
@@ -541,36 +501,12 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
         countOfContour++;
         rectScan0 = new RGB[rectHeight * rectWidth];
 
-                LOG_INFO("Memory allocated.");
-
-                // Copy the rectangle rgb data to buffer
-                CopyRGBData(rectScan0, (UINT32)rectHeight, (UINT32)rectWidth, graphics, device, (UINT32)minX, (UINT32)minY);
-
-                LOG_INFO("Rectangle rgb data copied.");
-                LOG_INFO("Encoding rectangle.");
-
-                // Prepare the JPEG buffer for encoding
-                jpegBuffer.offset = 0;
-
-                auto encodeResult = JpegEncoder::Encode(JpegCallback, &jpegBuffer, (INT32)quality, (INT32)rectWidth, (INT32)rectHeight, 3, Span<const UINT8>((UINT8 *)rectScan0, rectWidth * rectHeight * sizeof(RGB)));
-                if (encodeResult.IsErr())
-                {
-                    LOG_ERROR("Failed to encode JPEG image (error code: %e).", encodeResult.Error());
-                    WriteErrorResponse(response, responseLength, StatusCode::StatusError);
-                    return;
-                }
-                LOG_INFO("Rectangle encoded with size: %u.", jpegBuffer.size);
-
-                LOG_INFO("Reallocating memory for packet.");
-                Rectangle rect((UINT32)minX, (UINT32)minY, jpegBuffer.size, jpegBuffer.outputBuffer);
-                // Add packet size for the rectangle data
-                packetSize += jpegBuffer.size + sizeof(rect.x) + sizeof(rect.y) + sizeof(rect.sizeOfData);
         for (INT32 j = 0; j < rectHeight; j++)
             for (INT32 k = 0; k < rectWidth; k++)
                 rectScan0[j * rectWidth + k] = graphics.currentScreenshot[(minY + j) * device.Width + minX + k];
 
         jpegBuffer.offset = 0;
-        auto encodeResult = JpegEncoder::Encode(JspegCallback, &jpegBuffer, (INT32)quality, rectWidth, rectHeight, 3, Span<const UINT8>((UINT8 *)rectScan0, rectWidth * rectHeight * sizeof(RGB)));
+        auto encodeResult = JpegEncoder::Encode(JpegCallback, &jpegBuffer, (INT32)quality, rectWidth, rectHeight, 3, Span<const UINT8>((UINT8 *)rectScan0, rectWidth * rectHeight * sizeof(RGB)));
         if (encodeResult.IsErr())
         {
             delete[] rectScan0;
@@ -581,13 +517,6 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
         Rectangle rect((UINT32)minX, (UINT32)minY, jpegBuffer.size, jpegBuffer.outputBuffer);
         packetSize += jpegBuffer.size + sizeof(rect.x) + sizeof(rect.y) + sizeof(rect.sizeOfData);
 
-                // Reallocate memory for the packet to hold the new rectangle data
-                auto newPacket = new CHAR[packetSize];
-                Memory::Copy(newPacket, packet, offset);
-                delete[] packet;
-                packet = newPacket;
-
-                LOG_INFO("Memory allocated.");
         auto newPacket = new CHAR[packetSize];
         Memory::Copy(newPacket, packet, offset);
         delete[] packet;
@@ -598,8 +527,7 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
         rectScan0 = nullptr;
     }
 
-        // Copy the current screenshot to the screenshot buffer for the next comparison
-        Memory::Copy(graphics.screenshot, graphics.currentScreenshot, device.Width * device.Height * sizeof(RGB));
+    // Copy the current screenshot to the screenshot buffer for the next comparison
     Memory::Copy(graphics.screenshot, graphics.currentScreenshot, device.Width * device.Height * sizeof(RGB));
 
     *(PUINT32)(packet + sizeof(UINT32)) = countOfContour;
