@@ -1,10 +1,10 @@
 # Position-Independent Agent
 
-### A Cross-Platform Remote Agent Built on [PIR](https://github.com/mrzaxaryan/Position-Independent-Runtime)
+### A Cross-Platform Remote Agent with Zero-Dependency, Position-Independent Code Generation
 
 <sub>
 
-![](https://img.shields.io/badge/%E2%80%8B-orange?style=flat-square) Compile only (no runner)
+![](https://img.shields.io/badge/%E2%80%8B-orange?style=flat-square) Compile only (no runner) &nbsp;&nbsp; ![](https://img.shields.io/badge/%E2%80%8B-yellow?style=flat-square) Tests pass (as executable) &nbsp;&nbsp; ![](https://img.shields.io/badge/%E2%80%8B-brightgreen?style=flat-square) Tests pass (as shellcode)
 
 </sub>
 
@@ -23,10 +23,10 @@
 <tr>
 <td align="center">1</td>
 <td>Windows</td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
 <td align="center">-</td>
 <td align="center">-</td>
@@ -35,9 +35,9 @@
 <td align="center">2</td>
 <td>macOS</td>
 <td align="center">-</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
 <td align="center">-</td>
 <td align="center">-</td>
@@ -45,19 +45,19 @@
 <tr>
 <td align="center">3</td>
 <td>Linux</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=yellow&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
 </tr>
 <tr>
 <td align="center">4</td>
 <td>Solaris</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=yellow&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
 <td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
@@ -67,21 +67,21 @@
 <tr>
 <td align="center">5</td>
 <td>FreeBSD</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=yellow&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=yellow&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
 </tr>
 <tr>
 <td align="center">6</td>
 <td>UEFI</td>
 <td align="center">-</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=yellow&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=yellow&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
 <td align="center">-</td>
 <td align="center">-</td>
@@ -90,9 +90,9 @@
 <td align="center">7</td>
 <td>Android</td>
 <td align="center">-</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
 <td align="center">-</td>
 <td align="center">-</td>
@@ -103,7 +103,7 @@
 <td align="center">-</td>
 <td align="center">-</td>
 <td align="center">-</td>
-<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=orange&style=for-the-badge" alt="Build" height="28"></a></td>
+<td align="center"><a href="https://github.com/mrzaxaryan/Position-Independent-Agent/actions/workflows/build.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/mrzaxaryan/Position-Independent-Agent/build.yml?branch=main&label=%E2%80%8B&labelColor=brightgreen&style=for-the-badge" alt="Build" height="28"></a></td>
 <td align="center">-</td>
 <td align="center">-</td>
 <td align="center">-</td>
@@ -247,18 +247,21 @@ Compiles to fully position-independent, zero-dependency binaries that communicat
 
 - [CMake](https://cmake.org/) 3.20+
 - [Ninja](https://ninja-build.org/)
-- [Clang/LLVM](https://llvm.org/) toolchain
+- [Clang/LLVM](https://llvm.org/) 22+ toolchain
 
 ## Building
 
 ```bash
-# Clone with submodules
-git clone --recursive https://github.com/mrzaxaryan/Position-Independent-Agent.git
+git clone https://github.com/mrzaxaryan/Position-Independent-Agent.git
 cd Position-Independent-Agent
 
-# Configure and build (pick a preset)
+# Build beacon (default)
 cmake --preset windows-x86_64-release
 cmake --build --preset windows-x86_64-release
+
+# Build tests
+cmake --preset linux-x86_64-debug -DBUILD_TESTS=ON -DENABLE_LOGGING=ON
+cmake --build --preset linux-x86_64-debug
 ```
 
 ### Available Presets
@@ -276,23 +279,35 @@ cmake --build --preset windows-x86_64-release
 
 Preset format: `<platform>-<arch>-<build_type>` (e.g., `linux-aarch64-debug`)
 
-## Build System
+## Architecture
 
-This project shares its CMake build system, VSCode configuration, and preset structure with the [PIR runtime](https://github.com/mrzaxaryan/Position-Independent-Runtime). The runtime submodule provides `Toolchain.cmake`, `Common.cmake`, and `Target.cmake` which handle cross-compilation, source collection, and post-build artifact generation. When the runtime updates its build system or adds new platform/architecture support, this project's `CMakePresets.json` and `.vscode/` configs should be synced to match.
+```
+src/
+├── core/        Layer 1 — types, strings, memory, math (platform-independent)
+├── platform/    Layer 2 — OS syscalls, file system, sockets, screens (8 platforms, 7 architectures)
+├── lib/         Layer 3 — crypto (SHA-256, ChaCha20, ECC), TLS 1.3, HTTP, WebSocket, JPEG
+└── beacon/      Layer 4 — command handlers, shell, VNC context, WebSocket message loop
+```
+
+All system interaction is through direct syscalls — no libc, no standard library. A custom LLVM pass (`pic-transform`) eliminates data sections at compile time, ensuring fully position-independent output.
 
 ## Project Structure
 
 ```
-├── CMakeLists.txt          # Project build configuration
+├── CMakeLists.txt          # Build configuration (beacon + test modes)
 ├── CMakePresets.json        # Build presets for all platform/arch combinations
+├── cmake/                   # Build system (toolchain, cross-compilation, PIC verification)
 ├── src/
-│   ├── main.cc             # Entry point and WebSocket message loop
-│   ├── commands.h          # Command types and handler declarations
-│   ├── commandsHandler.cc  # Command handler implementations
-│   ├── shell.h             # Shell abstraction (process + pipes)
-│   ├── shell.cc            # Shell implementation (cmd.exe / /bin/sh)
-│   └── vnc.h               # VNC/display context and JPEG buffer types
-└── runtime/                # PIR submodule (build system + runtime library)
+│   ├── core/               # Platform-independent primitives
+│   ├── platform/            # OS and architecture-specific implementations
+│   ├── lib/                 # High-level libraries (crypto, networking, image)
+│   ├── beacon/              # Agent command handlers and WebSocket loop
+│   └── entry_point.cc       # Platform entry point
+├── tests/                   # Test suite (31 test suites across all layers)
+└── tools/
+    ├── pic-transform/       # Custom LLVM pass for PIC enforcement
+    ├── poly-engine/         # Polymorphic engine
+    └── pyloader/            # Cross-platform shellcode loader (Python)
 ```
 
 ## Supported Commands
@@ -388,10 +403,6 @@ Captures a JPEG-encoded screenshot of a specified display.
 | `sizeOfData`  | `UINT32`           | Size of image                      |
 | `imageAsJpeg` | `CHAR[sizeOfData]` | Image                              |
 
- UINT32 x;
-    UINT32 y;
-    UINT32 sizeOfData; // Size of the jpeg data in bytes
-
 ## Configuration
 
-- **Server URL**: Defined in `src/main.cc` (WebSocket endpoint)
+- **Server URL**: Defined in `src/beacon/main.cc` (WebSocket endpoint)
