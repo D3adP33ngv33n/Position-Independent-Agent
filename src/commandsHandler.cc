@@ -592,7 +592,7 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
                 LOG_INFO("Allocating memory for rectangle rgb data.");
 
                 // Allocate memory for the rectangle rgb data
-                rectScan0 = new RGB[rectHeight * rectWeight];
+                // rectScan0 = new RGB[rectHeight * rectWeight];
 
                 LOG_INFO("Memory allocated.");
 
