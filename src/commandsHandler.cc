@@ -386,6 +386,7 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
     auto displayIndex = *(PUINT32)(command);
     auto quality = *(PUINT32)(command + sizeof(UINT32));
     auto isFullScreen = *(PUINT32)(command + sizeof(UINT32) + sizeof(UINT32));
+    LOG_INFO("Handling GetScreenshotCommand for display index: %u, quality: %u, isFullScreen: %u", displayIndex, quality, isFullScreen);
 
     // Ensure the VNC context exists - create it if it doesn't, and validate the result
     if (context->vncContext == nullptr)
@@ -407,10 +408,7 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
     const ScreenDevice &device = context->vncContext->DeviceList.Devices[displayIndex];
 
     if (context->vncContext->GraphicsList.count == 0)
-    {
-        context->vncContext->GraphicsList.graphicsArray = new Graphics[context->vncContext->DeviceList.Count];
-        context->vncContext->GraphicsList.count = context->vncContext->DeviceList.Count;
-    }
+        context->vncContext->GraphicsList.Init(context->vncContext->DeviceList.Count);
 
     Graphics &graphics = context->vncContext->GraphicsList.graphicsArray[displayIndex];
     
