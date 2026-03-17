@@ -62,6 +62,18 @@ struct GraphicsList
             graphicsArray = nullptr;
         }
     }
+    
+    BOOL IsInitialized() const
+    {
+        return graphicsArray != nullptr && count > 0;
+    }
+
+    GraphicsList& Init(UINT32 Count)
+    {
+        graphicsArray = new Graphics[Count];
+        count = Count;
+        return *this;
+    }
 };
 
 struct VNCContext

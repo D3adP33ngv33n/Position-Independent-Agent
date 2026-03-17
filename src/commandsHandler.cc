@@ -437,6 +437,19 @@ PRGB CopyRGBData(UINT32 height, UINT32 weight, Graphics &graphics, const ScreenD
     return rect;
 }
 
+VOID GetContourBounds(PContour contourArray, INT32& minX, INT32& minY, INT32& maxX, INT32& maxY)
+{   
+    for(INT32 i = 0; i < contourArray->Count; i++){
+        if(contourArray->Points[i].Col < minX)
+            minX = contourArray->Points[i].Col;
+        if(contourArray->Points[i].Col > maxX)
+            maxX = contourArray->Points[i].Col;
+        if(contourArray->Points[i].Row < minY)
+            minY = contourArray->Points[i].Row;
+        if(contourArray->Points[i].Row > maxY)
+            maxY = contourArray->Points[i].Row;
+    }
+}
 // Gets a screenshot of the specified display device
 VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]] USIZE commandLength, PPCHAR response, PUSIZE responseLength, [[maybe_unused]] Context *context)
 {
@@ -476,11 +489,8 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
 
     // Check if graphics are initialized
     if (context->vncContext->GraphicsList.count == 0)
-    {
-        context->vncContext->GraphicsList.graphicsArray = new Graphics[context->vncContext->DeviceList.Count];
-        context->vncContext->GraphicsList.count = context->vncContext->DeviceList.Count;
-    }
-
+        context->vncContext->GraphicsList.Init(context->vncContext->DeviceList.Count);
+    
     // Get the Graphics structure for the specified display index and initialize buffers if they are not already allocated
     Graphics &graphics = context->vncContext->GraphicsList.graphicsArray[displayIndex];
     
@@ -574,48 +584,27 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
             // find its size
             if (hierarchy[i].Parent == 1)
             {
-                // Check if the contour has points
                 INT32 minX = contoursArray[i].Points[0].Col, minY = contoursArray[i].Points[0].Row, maxX = 0, maxY = 0;
                 // Loop through the points in the contour to find the min and max coordinates to create a rectangle
-                for (INT32 j = 0; j < contoursArray[i].Count; j++)
-                {
-                    if (contoursArray[i].Points[j].Col < minX)
-                    {
-                        minX = contoursArray[i].Points[j].Col;
-                    }
-                    if (contoursArray[i].Points[j].Col > maxX)
-                    {
-                        maxX = contoursArray[i].Points[j].Col;
-                    }
-                    if (contoursArray[i].Points[j].Row < minY)
-                    {
-                        minY = contoursArray[i].Points[j].Row;
-                    }
-                    if (contoursArray[i].Points[j].Row > maxY)
-                    {
-                        maxY = contoursArray[i].Points[j].Row;
-                    }
-                }
+                GetContourBounds(&contoursArray[i], minX, minY, maxX, maxY);
 
                 // Calculate the width and height of the rectangle
                 INT32 rectWeight = maxX - minX + 1;
                 INT32 rectHeight = maxY - minY + 1;
 
-                // Make strid dividable by 4(needed for GdipCreateBitmapFromScan0)
+                // Make strid dividable by 4 (needed for GdipCreateBitmapFromScan0)
                 if (rectWeight % 4 != 0)
-                {
                     rectWeight -= rectWeight % 4;
-                }
+            
                 // Check if the rectangle is too small to be considered
                 if (rectHeight < 32 || rectWeight < 32)
-                {
                     continue;
-                }
+                
                 countOfContour++;
 
                 LOG_INFO("Rectangle: x: %d, y: %d, width: %d, height: %d.", minX, minY, rectWeight, rectHeight);
-
                 LOG_INFO("Allocating memory for rectangle rgb data.");
+
                 // Allocate memory for the rectangle rgb data
                 rectScan0 = new RGB[rectHeight * rectWeight];
 
