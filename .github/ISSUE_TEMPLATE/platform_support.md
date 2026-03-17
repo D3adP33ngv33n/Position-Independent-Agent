@@ -13,10 +13,10 @@ assignees: ''
 
 ## Runtime Support Status
 
-Does the [PIR runtime](https://github.com/mrzaxaryan/Position-Independent-Runtime) already support this platform?
+Does the runtime layer (`src/platform/`) already support this platform?
 
-- [ ] Yes - runtime support exists, agent just needs build presets and CI
-- [ ] No - runtime support must be added first (file an issue in the runtime repo)
+- [ ] Yes - platform layer exists, just needs build presets and CI
+- [ ] No - platform layer must be added (kernel syscalls, memory, console, fs, socket, screen, system)
 
 ## Implementation Plan
 

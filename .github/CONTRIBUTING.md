@@ -17,6 +17,7 @@ Thank you for your interest in contributing to PIA! This guide covers everything
 - [Memory & Resources](#memory--resources)
 - [Patterns](#patterns)
 - [Adding Commands](#adding-commands)
+- [Testing](#testing)
 - [Common Pitfalls](#common-pitfalls)
 - [Submitting Changes](#submitting-changes)
 
@@ -30,7 +31,7 @@ Thank you for your interest in contributing to PIA! This guide covers everything
 
 ```bash
 # Clone with submodules
-git clone --recursive https://github.com/mrzaxaryan/Position-Independent-Agent.git
+git clone https://github.com/mrzaxaryan/Position-Independent-Agent.git
 cd Position-Independent-Agent
 
 # Build
@@ -122,24 +123,46 @@ For more information, see the [VSCode WSL documentation](https://code.visualstud
 ## Project Structure
 
 ```
-├── CMakeLists.txt          # Project build configuration
-├── CMakePresets.json        # Build presets for all platform/arch combinations
+├── CMakeLists.txt            # Build configuration (beacon + test modes)
+├── CMakePresets.json          # Build presets for all platform/arch combinations
+├── cmake/                     # Build system (toolchain, cross-compilation, PIC verification)
+│   ├── Common.cmake           # Shared CMake functions
+│   ├── CompilerFlags.cmake    # Clang/LLVM flags (C++23, -nostdlib, PIC)
+│   ├── Options.cmake          # CMake options (BUILD_TESTS, ENABLE_LOGGING)
+│   ├── Toolchain.cmake        # Compiler detection
+│   ├── PICTransform.cmake     # pic-transform LLVM pass integration
+│   ├── Sources.cmake          # Source file collection & platform filtering
+│   ├── Target.cmake           # Executable definition & post-build verification
+│   ├── Triples.cmake          # LLVM target triple generation
+│   ├── platforms/             # Per-platform CMake modules (Windows, Linux, macOS, etc.)
+│   └── data/                  # Linker scripts & function order files
 ├── src/
-│   ├── main.cc             # Entry point and WebSocket message loop
-│   ├── commandsHandler.cc  # Command handler implementations
-│   └── commands.h          # Command types and handler declarations
-├── scripts/
-│   └── loader.py           # Cross-platform PIC shellcode loader
-└── runtime/                # PIR submodule (build system + runtime library)
+│   ├── entry_point.cc         # Unified platform entry point
+│   ├── core/                  # Layer 1 — types, strings, memory, math (platform-independent)
+│   ├── platform/              # Layer 2 — OS syscalls, file system, sockets, screens (8 platforms)
+│   ├── lib/                   # Layer 3 — crypto, TLS 1.3, HTTP, WebSocket, JPEG
+│   └── beacon/                # Layer 4 — command handlers, shell, VNC, WebSocket loop
+│       ├── main.cc            # WebSocket message loop and command dispatcher
+│       ├── commands.h         # Command types, handler declarations, Context struct
+│       ├── commandsHandler.cc # Command handler implementations
+│       ├── shell.cc/h         # Interactive shell (PTY on POSIX, cmd.exe on Windows)
+│       └── vnc.h              # VNC/screenshot context
+├── tests/                     # Test suite (31 test suites across all layers)
+│   ├── start.cc               # Test harness entry point
+│   └── *_tests.h              # Individual test suites
+└── tools/
+    ├── pic-transform/         # Custom LLVM pass for PIC enforcement
+    ├── poly-engine/           # Polymorphic engine
+    └── pyloader/              # Cross-platform shellcode loader (Python)
 ```
 
-The agent is built on top of the [Position-Independent Runtime (PIR)](https://github.com/mrzaxaryan/Position-Independent-Runtime). The runtime submodule provides the build system (`Toolchain.cmake`, `Common.cmake`, `Target.cmake`), the cross-compilation toolchain, and the full runtime library (networking, crypto, file system, etc.).
+The project is a self-contained monorepo. The `cmake/` directory contains the full build system, and `src/` contains the runtime library and agent code in a layered architecture (core → platform → lib → beacon).
 
 ---
 
 ## The Golden Rule: No Data Sections
 
-The binary must contain **only** a `.text` section. No `.rdata`, `.rodata`, `.data`, or `.bss`. Verified automatically by `cmake/VerifyPICMode.cmake` in the runtime.
+The binary must contain **only** a `.text` section. No `.rdata`, `.rodata`, `.data`, or `.bss`. Verified automatically by the post-build step in `cmake/PostBuild.cmake`.
 
 The [pic-transform](https://github.com/mrzaxaryan/pic-transform) LLVM pass runs automatically during compilation and eliminates data sections by converting global constants (strings, floats, arrays) into stack-local immediate stores. This means you can write normal C++ string literals, float constants, and const arrays -- they are transformed automatically.
 
@@ -171,23 +194,27 @@ The [pic-transform](https://github.com/mrzaxaryan/pic-transform) LLVM pass runs 
 - Use `consteval` when evaluation **must** occur at compile time
 
 ### Includes
-- `runtime.h` → includes the full PIR runtime
+- `lib/runtime.h` → aggregate header for the full runtime (core + platform + lib layers)
+- Beacon code includes layer-specific headers: `commands.h`, `runtime.h`, `websocket_client.h`, etc.
 - Implementation files must include their **own header first**
-- Use full paths relative to `src/` for runtime headers
+- Use header names directly (include paths are set per-layer by CMake)
 
 ---
 
 ## Documentation
 
-All public APIs and protocol implementations **must** include Doxygen documentation. See the [PIR Contributing Guide](https://github.com/mrzaxaryan/Position-Independent-Runtime/blob/main/.github/CONTRIBUTING.md#documentation) for the full documentation standard, including RFC references and Windows NT API references.
+All public APIs and protocol implementations **must** include Doxygen documentation.
+
+- Every public function, struct, and enum requires a `@brief` description
+- Include `@param`, `@return`, and `@note` tags as appropriate
+- Reference RFCs or specifications where applicable (e.g., `@see RFC 8446 Section 4.1.2`)
+- For Windows NT API wrappers, reference the NT function being called
 
 ---
 
 ## Naming Conventions
 
-This project follows the same naming conventions as PIR. See the [PIR Contributing Guide](https://github.com/mrzaxaryan/Position-Independent-Runtime/blob/main/.github/CONTRIBUTING.md#naming-conventions) for the complete table.
-
-Key conventions for agent code:
+Key conventions:
 
 | Kind | Convention | Examples |
 |------|-----------|----------|
@@ -206,7 +233,7 @@ Key conventions for agent code:
 | Style | When | Example |
 |-------|------|---------|
 | By value | Small register-sized types | `UINT32 ComputeHash(UINT32 input)` |
-| By pointer | Output params, nullable | `VOID Handle_GetFileContentCommand(PCHAR command, USIZE commandLength, PPCHAR response, PUSIZE responseLength)` |
+| By pointer | Output params, nullable | `VOID Handle_GetFileContentCommand(PCHAR command, USIZE commandLength, PPCHAR response, PUSIZE responseLength, Context *context)` |
 | By reference | Non-null params | `static VOID ToWireEntry(const DirectoryEntry &src, WireDirectoryEntry &dst)` |
 | `Span<T>` | Contiguous buffer params | `file.Read(Span<UINT8>(buffer, size))` |
 
@@ -217,14 +244,12 @@ Key conventions for agent code:
 
 ## Error Handling
 
-PIR has no exceptions. Every fallible function returns `Result<T, Error>` or `Result<void, Error>`. Command handlers communicate errors via the response buffer using `StatusCode` values.
-
-See the [PIR Contributing Guide](https://github.com/mrzaxaryan/Position-Independent-Runtime/blob/main/.github/CONTRIBUTING.md#error-handling) for the full error handling standard.
+There are no exceptions. Every fallible function returns `Result<T, Error>` or `Result<void, Error>`. Command handlers communicate errors via the response buffer using `StatusCode` values.
 
 ### Command Handler Pattern
 
 ```cpp
-VOID Handle_MyCommand(PCHAR command, USIZE commandLength, PPCHAR response, PUSIZE responseLength)
+VOID Handle_MyCommand(PCHAR command, USIZE commandLength, PPCHAR response, PUSIZE responseLength, Context *context)
 {
     // Parse request from command buffer
     // ...
@@ -249,10 +274,9 @@ VOID Handle_MyCommand(PCHAR command, USIZE commandLength, PPCHAR response, PUSIZ
 ## Memory & Resources
 
 - **Avoid heap** unless no alternative. Prefer stack-local variables and fixed-size buffers.
-- **`new`/`new[]`/`delete`/`delete[]` are safe** - globally overloaded to route through the custom allocator.
-- **Always `delete[]` response buffers** in the caller (see `main.cc` message loop).
-
-See the [PIR Contributing Guide](https://github.com/mrzaxaryan/Position-Independent-Runtime/blob/main/.github/CONTRIBUTING.md#memory--resources) for the full memory and RAII standard.
+- **`new`/`new[]`/`delete`/`delete[]` are safe** - globally overloaded to route through the platform allocator (HeapAlloc on Windows, mmap on POSIX, AllocatePool on UEFI).
+- **Always `delete[]` response buffers** in the caller (see `src/beacon/main.cc` message loop).
+- **No RAII destructors for heap objects** - manually manage lifetime with `new`/`delete`.
 
 ---
 
@@ -290,19 +314,39 @@ To add a new command:
    };
    ```
 
-2. **Declare handler** in `commands.h`:
+2. **Declare handler** in `src/beacon/commands.h`:
    ```cpp
-   VOID Handle_MyNewCommandCommand(PCHAR command, USIZE commandLength, PPCHAR response, PUSIZE responseLength);
+   VOID Handle_MyNewCommandCommand(PCHAR command, USIZE commandLength, PPCHAR response, PUSIZE responseLength, Context *context);
    ```
 
-3. **Implement handler** in `commandsHandler.cc`
+3. **Implement handler** in `src/beacon/commandsHandler.cc`
 
-4. **Register handler** in `main.cc`:
+4. **Register handler** in `src/beacon/main.cc`:
    ```cpp
-   commandHandlers[CommandType::Command_MyNewCommand] = EMBED_FUNC(Handle_MyNewCommandCommand);
+   commandHandlers[CommandType::Command_MyNewCommand] = Handle_MyNewCommandCommand;
    ```
 
 5. **Update README.md** with the new command's request/response format
+
+---
+
+## Testing
+
+The project has 31 test suites covering all layers (core, platform, lib). Tests are built as a separate executable using the same codebase.
+
+```bash
+# Build and run tests
+cmake --preset linux-x86_64-debug -DBUILD_TESTS=ON -DENABLE_LOGGING=ON
+cmake --build --preset linux-x86_64-debug
+./build/debug/linux/x86_64/cmake/output
+```
+
+**Options:**
+- `-DBUILD_TESTS=ON` — compile test suite instead of the beacon
+- `-DENABLE_LOGGING=ON` — include logging output (recommended for debugging)
+- `-DPIR_LOG_LEVEL=STATUS|VERBOSE|DEBUG|QUIET` — set log verbosity
+
+Test files are header-only (`tests/*_tests.h`) and use a lightweight test framework (`tests/tests.h`) with macros like `TEST_EQUAL`, `TEST_TRUE`, `TEST_FALSE`.
 
 ---
 

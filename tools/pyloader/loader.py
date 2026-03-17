@@ -215,7 +215,8 @@ def run_mmap(shellcode):
 # =============================================================================
 
 MEM_COMMIT_RESERVE                 = 0x3000
-PAGE_EXECUTE_READWRITE             = 0x40
+PAGE_READWRITE                     = 0x04
+PAGE_EXECUTE_READ                  = 0x20
 CREATE_SUSPENDED                   = 0x00000004
 EXTENDED_STARTUPINFO_PRESENT       = 0x00080000
 INFINITE                           = 0xFFFFFFFF
@@ -254,6 +255,9 @@ def setup_kernel32():
 
     k32.GetExitCodeThread.argtypes = [wintypes.HANDLE, wintypes.LPDWORD]
     k32.GetExitCodeThread.restype = wintypes.BOOL
+
+    k32.VirtualProtectEx.argtypes = [wintypes.HANDLE, wintypes.LPVOID, ctypes.c_size_t, wintypes.DWORD, ctypes.POINTER(wintypes.DWORD)]
+    k32.VirtualProtectEx.restype = wintypes.BOOL
 
     k32.CloseHandle.argtypes = [wintypes.HANDLE]
     k32.CloseHandle.restype = wintypes.BOOL
@@ -370,18 +374,23 @@ def run_injected(shellcode, target_arch, cross_family=False):
     print("[+] Created process PID: %d" % pi.dwProcessId)
 
     try:
-        remote_mem = k32.VirtualAllocEx(pi.hProcess, None, len(shellcode), MEM_COMMIT_RESERVE, PAGE_EXECUTE_READWRITE)
+        remote_mem = k32.VirtualAllocEx(pi.hProcess, None, len(shellcode), MEM_COMMIT_RESERVE, PAGE_READWRITE)
         if not remote_mem:
             raise OSError("VirtualAllocEx failed: %d" % k32.GetLastError())
 
-        print("[+] Remote memory: 0x%x" % remote_mem)
+        print("[+] Remote memory (RW): 0x%x" % remote_mem)
 
         written = ctypes.c_size_t()
         if not k32.WriteProcessMemory(pi.hProcess, remote_mem, shellcode, len(shellcode), ctypes.byref(written)):
             raise OSError("WriteProcessMemory failed: %d" % k32.GetLastError())
 
         print("[+] Written: %d bytes" % written.value)
-        print("[+] Entry: 0x%x" % remote_mem)
+
+        old_protect = wintypes.DWORD()
+        if not k32.VirtualProtectEx(pi.hProcess, remote_mem, len(shellcode), PAGE_EXECUTE_READ, ctypes.byref(old_protect)):
+            raise OSError("VirtualProtectEx failed: %d" % k32.GetLastError())
+
+        print("[+] Entry (RX): 0x%x" % remote_mem)
         print("[*] Executing...")
         sys.stdout.flush()
 

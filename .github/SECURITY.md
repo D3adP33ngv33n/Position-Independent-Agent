@@ -55,7 +55,6 @@ The following are considered in scope for security reports:
 
 The following are **out of scope**:
 
-- Issues in the PIR runtime (report these to [Position-Independent Runtime](https://github.com/mrzaxaryan/Position-Independent-Runtime/security))
 - Issues in third-party tools (LLVM, CMake, Ninja)
 - Misuse of PIA for unauthorized purposes
 - Vulnerabilities that require physical access to the target machine

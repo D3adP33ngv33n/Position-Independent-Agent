@@ -217,23 +217,22 @@
 
 </details>
 
-Compiles to fully position-independent, zero-dependency binaries that communicate over WebSocket.
+Compiles to fully position-independent, zero-dependency binaries that communicate over WebSocket. No libc, no standard library, no dynamic linking -- every syscall, crypto primitive, and protocol is implemented from scratch.
 
 ## Features
 
-- **WebSocket Communication** - Connects to a server and processes commands in a persistent loop
-- **Command Protocol** - Binary protocol with the following command types:
-  - `GetSystemInfo` - Returns machine UUID, hostname, CPU architecture, and OS platform
-  - `GetDirectoryContent` - Lists directory entries for a given path
-  - `GetFileContent` - Reads file content at a specified offset and length
-  - `GetFileChunkHash` - Computes SHA-256 hash of a file chunk
-  - `WriteShell` - Sends input to an interactive shell session
-  - `ReadShell` - Reads output from an interactive shell session
-  - `GetDisplays` - Enumerates connected display devices with resolution and position info
-  - `GetScreenshot` - Captures a JPEG-encoded screenshot of a specified display
-- **Interactive Shell** - Spawns a persistent shell process (`cmd.exe` on Windows, `/bin/sh` via PTY on Unix) with UTF-8 byte stream I/O for remote command execution
-- **Cross-Platform** - Builds for Windows, Linux, macOS, FreeBSD, Solaris, UEFI, Android, and iOS across x86, x86_64, ARM, AArch64, RISC-V, and MIPS architectures
-- **Position-Independent** - Output binary is fully relocatable with no external dependencies
+- **Zero Dependencies** - No libc, no C++ standard library, no external libraries. Crypto (SHA-256, ChaCha20-Poly1305, ECC P-256), TLS 1.3, WebSocket, HTTP, DNS, and JPEG encoding are all implemented from scratch
+- **Position-Independent** - A custom LLVM pass ([pic-transform](tools/pic-transform/)) eliminates `.data`/`.rodata`/`.bss` sections at compile time, producing binaries with only a `.text` section -- fully relocatable as raw shellcode
+- **Cross-Platform** - 8 platforms (Windows, Linux, macOS, FreeBSD, Solaris, UEFI, Android, iOS) across 7 architectures (i386, x86_64, armv7a, aarch64, riscv32, riscv64, mips64) via direct syscalls
+- **TLS 1.3 + WebSocket** - Encrypted command-and-control over `wss://` using ChaCha20-Poly1305 AEAD (RFC 8446, RFC 6455)
+- **Binary Command Protocol** - 8 command types over WebSocket:
+  - `GetSystemInfo` - Machine UUID, hostname, CPU architecture, OS platform
+  - `GetDirectoryContent` - Directory listing with metadata
+  - `GetFileContent` - File read at offset
+  - `GetFileChunkHash` - SHA-256 hash of file chunk
+  - `WriteShell` / `ReadShell` - Interactive shell (PTY on POSIX, `cmd.exe` on Windows)
+  - `GetDisplays` - Display enumeration with geometry
+  - `GetScreenshot` - JPEG-encoded screenshot capture with dirty-rectangle diffing
 
 ### Tested Features
 
@@ -245,9 +244,11 @@ Compiles to fully position-independent, zero-dependency binaries that communicat
 
 ## Prerequisites
 
+- [Clang/LLVM](https://llvm.org/) 22+ (compiler, linker, and pic-transform pass)
 - [CMake](https://cmake.org/) 3.20+
-- [Ninja](https://ninja-build.org/)
-- [Clang/LLVM](https://llvm.org/) 22+ toolchain
+- [Ninja](https://ninja-build.org/) 1.10+
+
+> **Windows users:** Build under WSL. See [CONTRIBUTING.md](.github/CONTRIBUTING.md#toolchain-installation) for detailed setup instructions.
 
 ## Building
 
@@ -259,9 +260,10 @@ cd Position-Independent-Agent
 cmake --preset windows-x86_64-release
 cmake --build --preset windows-x86_64-release
 
-# Build tests
+# Build and run tests
 cmake --preset linux-x86_64-debug -DBUILD_TESTS=ON -DENABLE_LOGGING=ON
 cmake --build --preset linux-x86_64-debug
+./build/debug/linux/x86_64/cmake/output
 ```
 
 ### Available Presets
@@ -281,15 +283,17 @@ Preset format: `<platform>-<arch>-<build_type>` (e.g., `linux-aarch64-debug`)
 
 ## Architecture
 
+The codebase is organized in four layers, each building on the one below:
+
 ```
 src/
-├── core/        Layer 1 — types, strings, memory, math (platform-independent)
-├── platform/    Layer 2 — OS syscalls, file system, sockets, screens (8 platforms, 7 architectures)
-├── lib/         Layer 3 — crypto (SHA-256, ChaCha20, ECC), TLS 1.3, HTTP, WebSocket, JPEG
-└── beacon/      Layer 4 — command handlers, shell, VNC context, WebSocket message loop
+├── core/        Layer 1 — Primitive types, Result<T,E>, Span<T>, strings, memory ops, math, base64, binary I/O
+├── platform/    Layer 2 — OS abstraction: syscalls, allocator, console, file system, sockets, screen capture, processes
+├── lib/         Layer 3 — Crypto (SHA-256, ChaCha20-Poly1305, ECC P-256), TLS 1.3, HTTP, DNS, WebSocket, JPEG encoder
+└── beacon/      Layer 4 — Agent: command dispatcher, 8 command handlers, interactive shell, VNC screenshot context
 ```
 
-All system interaction is through direct syscalls — no libc, no standard library. A custom LLVM pass (`pic-transform`) eliminates data sections at compile time, ensuring fully position-independent output.
+All system interaction is through direct syscalls (NT Native API on Windows, inline assembly on POSIX, Boot Services on UEFI). A custom LLVM pass ([pic-transform](tools/pic-transform/)) eliminates data sections at compile time, ensuring only a `.text` section in the final binary.
 
 ## Project Structure
 
@@ -406,3 +410,15 @@ Captures a JPEG-encoded screenshot of a specified display.
 ## Configuration
 
 - **Server URL**: Defined in `src/beacon/main.cc` (WebSocket endpoint)
+
+## Contributing
+
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for build instructions, code style, and how to submit changes.
+
+## Security
+
+See [SECURITY.md](.github/SECURITY.md) for the vulnerability reporting policy.
+
+## License
+
+This project is licensed under the [AGPL-3.0](LICENSE).
