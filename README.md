@@ -237,11 +237,11 @@ Compiles to fully position-independent, zero-dependency binaries that communicat
 
 ### Tested Features
 
-| Feature | Windows | Linux | Android |
-|---------|:-------:|:-----:|:-------:|
-| Desktop (display enumeration + screenshot) | :white_check_mark: | :white_check_mark: | |
-| File Manager (directory listing + file read + hash) | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Shell (interactive cmd.exe / /bin/sh) | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Feature | Windows | macOS | Linux | Solaris | FreeBSD | UEFI | Android | iOS |
+|---------|:-------:|:-----:|:-----:|:-------:|:-------:|:----:|:-------:|:---:|
+| Desktop (display enumeration + screenshot) | :white_check_mark: | :white_check_mark: | :white_check_mark: | | | | | |
+| File Manager (directory listing + file read + hash) | :white_check_mark: | | :white_check_mark: | | | | :white_check_mark: | |
+| Shell (interactive cmd.exe / /bin/sh) | :white_check_mark: | | :white_check_mark: | | | | :white_check_mark: | |
 
 ## Prerequisites
 
