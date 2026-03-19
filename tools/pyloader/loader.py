@@ -33,10 +33,8 @@ import sys
 try:
     from urllib.request import Request, urlopen
     from urllib.error import HTTPError
-    _PY3 = True
 except ImportError:
     from urllib2 import Request, urlopen, HTTPError
-    _PY3 = False
 
 REPO = "mrzaxaryan/Position-Independent-Agent"
 
@@ -152,7 +150,7 @@ def _ssl_context():
         if not ctx.get_ca_certs():
             raise ssl.SSLError("no CA certs")
         return ctx
-    except (ssl.SSLError, OSError):
+    except (ssl.SSLError, OSError, IOError):
         print("[!] Warning: SSL certificate verification disabled (no CA bundle found)")
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
