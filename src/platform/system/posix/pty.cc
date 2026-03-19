@@ -7,7 +7,7 @@
  * - Linux/Android: open /dev/ptmx, TIOCSPTLCK unlock + TIOCGPTN for slave number, /dev/pts/<N>
  * - Linux/Android MIPS64: O_NOCTTY value differs (0x800 vs 0x100)
  * - Linux/Android aarch64/riscv: SYS_OPENAT instead of SYS_OPEN
- * - FreeBSD: SYS_POSIX_OPENPT (504), TIOCPTUNLK unlock + TIOCGPTN for slave number, /dev/pts/<N>
+ * - FreeBSD: SYS_POSIX_OPENPT (504) auto-unlocks, TIOCGPTN for slave number, /dev/pts/<N>
  * - macOS/iOS: open /dev/ptmx, TIOCPTYGRANT + TIOCPTYUNLK unlock + TIOCPTYGNAME for slave path
  * - Solaris: open /dev/ptmx, I_STR+UNLKPT unlock + SYS_FSTATAT minor for slave number, /dev/pts/<N>
  * - Poll: SYS_PPOLL (Linux/Android), SYS_POLLSYS (Solaris), SYS_POLL (others)
@@ -47,7 +47,6 @@ constexpr USIZE TIOCPTYGRANT = 0x20007454; // _IO('t', 0x54) -- grantpt()
 constexpr USIZE TIOCPTYUNLK  = 0x20007452; // _IO('t', 0x52) -- unlockpt()
 constexpr USIZE TIOCPTYGNAME = 0x40807453; // _IOC(OUT,'t',0x53,128) -- ptsname()
 #elif defined(PLATFORM_FREEBSD)
-constexpr USIZE TIOCPTUNLK = 0x20007412; // _IO('t', 18) -- unlockpt()
 constexpr USIZE TIOCGPTN = 0x40047409;   // _IOR('t', 9, int) -- get pts number
 #elif defined(PLATFORM_SOLARIS)
 // Solaris uses STREAMS ioctls, not Linux TIOCSPTLCK/TIOCGPTN
@@ -217,15 +216,7 @@ static BOOL PtyOpenPair(SSIZE &masterFd, SSIZE &slaveFd)
 	}
 
 #elif defined(PLATFORM_FREEBSD)
-	{
-		SSIZE unlkRet = System::Call(SYS_IOCTL, (USIZE)masterFd, TIOCPTUNLK, 0);
-		if (unlkRet < 0)
-		{
-			LOG_ERROR("PTY: TIOCPTUNLK failed (errno: %d)", (INT32)(-unlkRet));
-			System::Call(SYS_CLOSE, (USIZE)masterFd);
-			return false;
-		}
-	}
+	// FreeBSD: posix_openpt() already unlocks the PTY — no unlock ioctl needed
 	INT32 ptyNum = 0;
 	{
 		SSIZE gptnRet = System::Call(SYS_IOCTL, (USIZE)masterFd, TIOCGPTN, (USIZE)&ptyNum);
