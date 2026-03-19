@@ -2,7 +2,7 @@
 
 Cross-platform shellcode loader for position-independent code. Downloads pre-built agents from GitHub Releases (or loads from a local file) and executes them.
 
-Requires **Python 2.7+** or **3.2+** with no third-party dependencies.
+Requires **Python 2.6+** or **3.0+** with no third-party dependencies.
 
 ## Usage
 

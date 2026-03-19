@@ -6,7 +6,7 @@ PIC Shellcode Loader
 Cross-platform loader for position-independent code.
 Loads shellcode from a local file or downloads from GitHub Releases.
 
-Requires Python 2.7+ or 3.2+ (no third-party dependencies).
+Requires Python 2.6+ or 3.0+ (no third-party dependencies).
 
 Usage:
     # Local file (requires --arch):
@@ -22,7 +22,6 @@ Usage:
 
 from __future__ import print_function
 
-import argparse
 import ctypes
 import mmap
 import os
@@ -172,15 +171,19 @@ def download(platform_name, arch, tag):
         data = _http_get(url)
     except HTTPError as e:
         if e.code == 404:
-            sys.exit("[-] Asset '%s' not found in release %s.\n    URL: %s" % (asset, tag, url))
+            print("[-] Asset '%s' not found in release %s." % (asset, tag))
+            print("    URL: %s" % url)
+            sys.exit(1)
         raise
 
     # Validate: reject obviously wrong payloads before executing as shellcode
     if len(data) < 64:
-        sys.exit("[-] Downloaded data too small (%d bytes) - not valid shellcode" % len(data))
+        print("[-] Downloaded data too small (%d bytes) - not valid shellcode" % len(data))
+        sys.exit(1)
     header = data[:256]
     if b'<!DOCTYPE' in header or b'<html' in header or b'<HTML' in header:
-        sys.exit("[-] Downloaded data is HTML, not shellcode (check network/proxy)")
+        print("[-] Downloaded data is HTML, not shellcode (check network/proxy)")
+        sys.exit(1)
 
     return data
 
@@ -442,14 +445,18 @@ def run_injected(shellcode, target_arch, cross_family=False):
 # =============================================================================
 
 def main():
-    parser = argparse.ArgumentParser(description='PIC Shellcode Loader')
-    parser.add_argument('--arch', choices=list(ARCH.keys()),
-                        help='Target architecture (required for local files, optional for remote)')
-    parser.add_argument('--tag', default=None,
-                        help='GitHub release tag (default: preview). Enables remote mode.')
-    parser.add_argument('shellcode', nargs='?', default=None,
-                        help='Path to shellcode .bin file (omit to download from GitHub)')
-    args = parser.parse_args()
+    from optparse import OptionParser
+    parser = OptionParser(usage='%prog [options] [shellcode.bin]',
+                          description='PIC Shellcode Loader')
+    parser.add_option('--arch', choices=list(ARCH.keys()),
+                      help='Target architecture (required for local files, optional for remote)')
+    parser.add_option('--tag', default=None,
+                      help='GitHub release tag (default: preview)')
+    opts, positional = parser.parse_args()
+
+    shellcode_path = positional[0] if positional else None
+    arch = opts.arch
+    tag = opts.tag
 
     host_os, host_family, host_bits = get_host()
     python_bits = struct.calcsize("P") * 8
@@ -462,24 +469,25 @@ def main():
     print("[*] Host: %s/%s/%dbit" % (host_os, host_family, host_bits))
     print("[*] Python: %dbit" % python_bits)
 
-    if args.shellcode:
+    if shellcode_path:
         # --- Local mode: load from file ---
-        if not args.arch:
+        if not arch:
             parser.error("--arch is required when loading from a local file")
 
-        target = ARCH[args.arch]
-        print("[*] Target: %s" % args.arch)
+        target = ARCH[arch]
+        print("[*] Target: %s" % arch)
 
-        with open(args.shellcode, 'rb') as f:
+        with open(shellcode_path, 'rb') as f:
             shellcode = f.read()
         print("[+] Loaded: %d bytes" % len(shellcode))
 
         if host_os == 'windows':
             cross_family = host_family != target['family']
-            code = run_injected(shellcode, args.arch, cross_family=cross_family)
+            code = run_injected(shellcode, arch, cross_family=cross_family)
         elif target['family'] != host_family or target['bits'] != exec_bits:
-            sys.exit("[-] Cannot load %s shellcode in %dbit Python on %s/%dbit host"
-                     % (args.arch, python_bits, host_family, host_bits))
+            print("[-] Cannot load %s shellcode in %dbit Python on %s/%dbit host"
+                  % (arch, python_bits, host_family, host_bits))
+            sys.exit(1)
         else:
             code = run_mmap(shellcode)
     else:
@@ -490,19 +498,19 @@ def main():
                   % (host_os, host_family, host_bits, python_bits))
             sys.exit(1)
 
-        plat, arch = _ARTIFACT_MAP[key]
-        if args.arch:
-            arch = args.arch
-        print("[*] Platform: %s/%s" % (plat, arch))
-        print("[*] Release: %s" % (args.tag or DEFAULT_TAG))
+        plat, remote_arch = _ARTIFACT_MAP[key]
+        if arch:
+            remote_arch = arch
+        print("[*] Platform: %s/%s" % (plat, remote_arch))
+        print("[*] Release: %s" % (tag or DEFAULT_TAG))
 
-        shellcode = download(plat, arch, args.tag)
+        shellcode = download(plat, remote_arch, tag)
         print("[+] Loaded: %d bytes" % len(shellcode))
 
         if host_os == 'windows':
-            target = ARCH[arch]
+            target = ARCH[remote_arch]
             cross_family = host_family != target['family']
-            code = run_injected(shellcode, arch, cross_family=cross_family)
+            code = run_injected(shellcode, remote_arch, cross_family=cross_family)
         else:
             code = run_mmap(shellcode)
 
