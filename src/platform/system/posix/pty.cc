@@ -53,12 +53,12 @@ constexpr USIZE TIOCGPTN = 0x40047409;   // _IOR('t', 9, int) -- get pts number
 // Solaris uses STREAMS ioctls, not Linux TIOCSPTLCK/TIOCGPTN
 constexpr USIZE I_STR   = 0x5308;  // ('S' << 8) | 010
 constexpr USIZE UNLKPT  = 0x5002;  // ('P' << 8) | 2
-// st_rdev offset in Solaris struct stat
+// st_rdev offset in Solaris struct stat / stat64
 #if defined(ARCHITECTURE_X86_64) || defined(ARCHITECTURE_AARCH64)
 constexpr USIZE STAT_RDEV_OFFSET = 32;  // LP64: dev(8)+ino(8)+mode(4)+nlink(4)+uid(4)+gid(4)
 constexpr USIZE STAT_BUF_SIZE    = 128;
 #elif defined(ARCHITECTURE_I386)
-constexpr USIZE STAT_RDEV_OFFSET = 36;  // ILP32: dev(4)+pad(12)+ino(4)+mode(4)+nlink(4)+uid(4)+gid(4)
+constexpr USIZE STAT_RDEV_OFFSET = 40;  // ILP32 stat64: dev(4)+pad(12)+ino64(8)+mode(4)+nlink(4)+uid(4)+gid(4)
 constexpr USIZE STAT_BUF_SIZE    = 128;
 #endif
 #endif
@@ -141,37 +141,13 @@ static BOOL PtyOpenPair(SSIZE &masterFd, SSIZE &slaveFd)
 		System::Call(SYS_CLOSE, (USIZE)masterFd);
 		return false;
 	}
-	// Get slave PTY number via fstatat("/dev/fd/<N>") + minor(st_rdev).
-	// SYS_FSTAT (28) is removed/repurposed on Solaris 11.4 and segfaults on
-	// ILP32 — use SYS_FSTATAT (66) with a /dev/fd/<N> path instead.
+	// Get slave PTY number via fstatat(masterFd, NULL) + minor(st_rdev).
+	// SYS_FSTAT (28) is removed/repurposed on Solaris 11.4 — use
+	// SYS_FSTATAT with fd=masterFd and path=NULL, which POSIX defines as
+	// equivalent to fstat(fd, buf). This is what Solaris libc's ptsname() does.
 	UINT8 statBuf[STAT_BUF_SIZE] = {};
 	{
-		// Build "/dev/fd/<masterFd>" path
-		char fdPath[24];
-		const char fdPrefix[] = "/dev/fd/";
-		USIZE k = 0;
-		for (; fdPrefix[k]; k++)
-			fdPath[k] = fdPrefix[k];
-		INT32 fdVal = (INT32)masterFd;
-		if (fdVal == 0)
-		{
-			fdPath[k++] = '0';
-		}
-		else
-		{
-			char d[16];
-			USIZE dn = 0;
-			while (fdVal > 0)
-			{
-				d[dn++] = '0' + (fdVal % 10);
-				fdVal /= 10;
-			}
-			while (dn > 0)
-				fdPath[k++] = d[--dn];
-		}
-		fdPath[k] = '\0';
-
-		SSIZE statRet = System::Call(SYS_FSTATAT, (USIZE)AT_FDCWD, (USIZE)fdPath, (USIZE)statBuf, 0);
+		SSIZE statRet = System::Call(SYS_FSTATAT, (USIZE)masterFd, (USIZE)0, (USIZE)statBuf, 0);
 		if (statRet < 0)
 		{
 			LOG_ERROR("PTY: fstatat failed (errno: %d)", (INT32)(-statRet));
@@ -182,10 +158,11 @@ static BOOL PtyOpenPair(SSIZE &masterFd, SSIZE &slaveFd)
 	USIZE rdev = 0;
 #if defined(ARCHITECTURE_X86_64) || defined(ARCHITECTURE_AARCH64)
 	rdev = *(USIZE *)(statBuf + STAT_RDEV_OFFSET);
+	INT32 ptyNum = (INT32)(rdev & 0xFFFFFFFF); // LP64 minor(): lower 32 bits (L_MAXMIN)
 #elif defined(ARCHITECTURE_I386)
 	rdev = *(UINT32 *)(statBuf + STAT_RDEV_OFFSET);
+	INT32 ptyNum = (INT32)(rdev & 0x3ffff); // ILP32 minor(): lower 18 bits (O_MAXMIN)
 #endif
-	INT32 ptyNum = (INT32)(rdev & 0x3ffff); // minor() on Solaris
 	// Build "/dev/pts/<N>"
 	const char prefix[] = "/dev/pts/";
 	USIZE i = 0;
@@ -283,10 +260,11 @@ static BOOL PtyOpenPair(SSIZE &masterFd, SSIZE &slaveFd)
 	slavePath[i] = '\0';
 #endif
 
+	LOG_DEBUG("PTY: opening slave %s", slavePath);
 	slaveFd = PtyOpen(slavePath, O_RDWR | O_NOCTTY);
 	if (slaveFd < 0)
 	{
-		LOG_ERROR("PTY: open slave failed (errno: %d)", (INT32)(-slaveFd));
+		LOG_ERROR("PTY: open slave '%s' failed (errno: %d)", slavePath, (INT32)(-slaveFd));
 		System::Call(SYS_CLOSE, (USIZE)masterFd);
 		return false;
 	}
