@@ -47,7 +47,13 @@ constexpr USIZE TIOCPTYGRANT = 0x20007454; // _IO('t', 0x54) -- grantpt()
 constexpr USIZE TIOCPTYUNLK  = 0x20007452; // _IO('t', 0x52) -- unlockpt()
 constexpr USIZE TIOCPTYGNAME = 0x40807453; // _IOC(OUT,'t',0x53,128) -- ptsname()
 #elif defined(PLATFORM_FREEBSD)
-constexpr USIZE TIOCGPTN = 0x40047409;   // _IOR('t', 9, int) -- get pts number
+// FreeBSD uses FIODGNAME to get device name (like fdevname_r / ptsname)
+// _IOW('f', 120, struct fiodgname_arg) — size depends on pointer width
+#if defined(ARCHITECTURE_X86_64) || defined(ARCHITECTURE_AARCH64) || defined(ARCHITECTURE_RISCV64)
+constexpr USIZE FIODGNAME = 0x80106678;  // _IOW('f', 120, 16) — LP64: int(4)+pad(4)+ptr(8)
+#elif defined(ARCHITECTURE_I386)
+constexpr USIZE FIODGNAME = 0x80086678;  // _IOW('f', 120, 8) — ILP32: int(4)+ptr(4)
+#endif
 #elif defined(PLATFORM_SOLARIS)
 // Solaris uses STREAMS ioctls, not Linux TIOCSPTLCK/TIOCGPTN
 constexpr USIZE I_STR    = 0x5308;  // ('S' << 8) | 010
@@ -180,6 +186,7 @@ static BOOL PtyOpenPair(SSIZE &masterFd, SSIZE &slaveFd)
 	rdev = *(UINT32 *)(statBuf + STAT_RDEV_OFFSET);
 	INT32 ptyNum = (INT32)(rdev & 0x3ffff); // ILP32 minor(): lower 18 bits (O_MAXMIN)
 #endif
+	LOG_INFO("PTY: Solaris rdev=0x%x ptyNum=%d", (UINT32)rdev, ptyNum);
 	// Build "/dev/pts/<N>"
 	const char prefix[] = "/dev/pts/";
 	USIZE i = 0;
@@ -234,39 +241,29 @@ static BOOL PtyOpenPair(SSIZE &masterFd, SSIZE &slaveFd)
 	}
 
 #elif defined(PLATFORM_FREEBSD)
-	// FreeBSD: posix_openpt() already unlocks the PTY — no unlock ioctl needed
-	INT32 ptyNum = 0;
+	// FreeBSD: posix_openpt() already unlocks the PTY — no unlock ioctl needed.
+	// Get slave device name via FIODGNAME (returns e.g. "pts/0").
 	{
-		SSIZE gptnRet = System::Call(SYS_IOCTL, (USIZE)masterFd, TIOCGPTN, (USIZE)&ptyNum);
-		if (gptnRet < 0)
+		char devName[64] = {};
+		struct { INT32 len; PVOID buf; } fgn;
+		fgn.len = (INT32)sizeof(devName);
+		fgn.buf = (PVOID)devName;
+		SSIZE nameRet = System::Call(SYS_IOCTL, (USIZE)masterFd, FIODGNAME, (USIZE)&fgn);
+		if (nameRet < 0)
 		{
-			LOG_ERROR("PTY: TIOCGPTN failed (errno: %d)", (INT32)(-gptnRet));
+			LOG_ERROR("PTY: FIODGNAME failed (errno: %d)", (INT32)(-nameRet));
 			System::Call(SYS_CLOSE, (USIZE)masterFd);
 			return false;
 		}
+		// Build "/dev/" + devName
+		const char prefix[] = "/dev/";
+		USIZE i = 0;
+		for (; prefix[i]; i++)
+			slavePath[i] = prefix[i];
+		for (USIZE j = 0; devName[j] && i < sizeof(slavePath) - 1; j++, i++)
+			slavePath[i] = devName[j];
+		slavePath[i] = '\0';
 	}
-	const char prefix[] = "/dev/pts/";
-	USIZE i = 0;
-	for (; prefix[i]; i++)
-		slavePath[i] = prefix[i];
-	if (ptyNum == 0)
-	{
-		slavePath[i++] = '0';
-	}
-	else
-	{
-		char d[16];
-		USIZE n = 0;
-		INT32 v = ptyNum;
-		while (v > 0)
-		{
-			d[n++] = '0' + (v % 10);
-			v /= 10;
-		}
-		while (n > 0)
-			slavePath[i++] = d[--n];
-	}
-	slavePath[i] = '\0';
 #endif
 
 	LOG_DEBUG("PTY: opening slave %s", slavePath);
