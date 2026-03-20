@@ -330,7 +330,7 @@ The project is built on a clean layered abstraction that separates concerns and 
 
 **LIB** provides high-level libraries: cryptography (SHA-256/384/512, HMAC, ChaCha20-Poly1305, ECC P-256), TLS 1.3, HTTP client, DNS resolution, WebSocket, and JPEG encoder.
 
-**BEACON** is the agent layer: command dispatcher, 8 command handlers, interactive shell (PTY on POSIX, `cmd.exe` on Windows), and VNC screenshot context.
+**BEACON** is the agent layer: command dispatcher, 8 command handlers, interactive shell (PTY on POSIX, `cmd.exe` on Windows), and screen capture context.
 
 Upper layers depend on lower layers, never the reverse.
 
@@ -339,7 +339,7 @@ src/
 ├── core/        Layer 1 — Primitive types, Result<T,E>, Span<T>, strings, memory ops, math, base64, binary I/O
 ├── platform/    Layer 2 — OS abstraction: syscalls, allocator, console, file system, sockets, screen capture, processes
 ├── lib/         Layer 3 — Crypto (SHA-256, ChaCha20-Poly1305, ECC P-256), TLS 1.3, HTTP, DNS, WebSocket, JPEG encoder
-└── beacon/      Layer 4 — Agent: command dispatcher, 8 command handlers, interactive shell, VNC screenshot context
+└── beacon/      Layer 4 — Agent: command dispatcher, 8 command handlers, interactive shell, screen capture context
 ```
 
 All system interaction is through direct syscalls (NT Native API on Windows, inline assembly on POSIX, Boot Services on UEFI). A custom LLVM pass ([pic-transform](tools/pic-transform/)) eliminates data sections at compile time, ensuring only a `.text` section in the final binary.

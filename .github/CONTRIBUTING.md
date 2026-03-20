@@ -141,12 +141,12 @@ For more information, see the [VSCode WSL documentation](https://code.visualstud
 │   ├── core/                  # Layer 1 — types, strings, memory, math (platform-independent)
 │   ├── platform/              # Layer 2 — OS syscalls, file system, sockets, screens (8 platforms)
 │   ├── lib/                   # Layer 3 — crypto, TLS 1.3, HTTP, WebSocket, JPEG
-│   └── beacon/                # Layer 4 — command handlers, shell, VNC, WebSocket loop
+│   └── beacon/                # Layer 4 — command handlers, shell, screen capture, WebSocket loop
 │       ├── main.cc            # WebSocket message loop and command dispatcher
 │       ├── commands.h         # Command types, handler declarations, Context struct
 │       ├── commandsHandler.cc # Command handler implementations
 │       ├── shell.cc/h         # Interactive shell (PTY on POSIX, cmd.exe on Windows)
-│       └── vnc.h              # VNC/screenshot context
+│       └── screen_capture.h   # Screen capture context
 ├── tests/                     # Test suite (31 test suites across all layers)
 │   ├── start.cc               # Test harness entry point
 │   └── *_tests.h              # Individual test suites

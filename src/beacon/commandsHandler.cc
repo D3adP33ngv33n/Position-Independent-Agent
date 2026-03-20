@@ -329,8 +329,8 @@ VOID Handle_ReadShellCommand([[maybe_unused]] PCHAR command, [[maybe_unused]] US
 // Gets the list of display devices and their information
 VOID Handle_GetDisplaysCommand([[maybe_unused]] PCHAR command, [[maybe_unused]] USIZE commandLength, PPCHAR response, PUSIZE responseLength, [[maybe_unused]] Context *context)
 {
-    if (context->vncContext == nullptr)
-        context->vncContext = new VNCContext();
+    if (context->screenCaptureContext == nullptr)
+        context->screenCaptureContext = new ScreenCaptureContext();
 
     // Getting the list of display devices and validating the result
     auto displays = Screen::GetDevices();
@@ -343,7 +343,7 @@ VOID Handle_GetDisplaysCommand([[maybe_unused]] PCHAR command, [[maybe_unused]] 
     LOG_INFO("Display devices enumerated successfully with %u display(s)", displays.Value().Count);
 
     ScreenDeviceList &deviceList = displays.Value();
-    context->vncContext->DeviceList = deviceList;
+    context->screenCaptureContext->DeviceList = deviceList;
     // Prepare the response buffer - writing status code, device count and array of ScreenDevice structures
     *responseLength += sizeof(deviceList.Count) + (USIZE)(deviceList.Count * sizeof(ScreenDevice));
     *response = new CHAR[*responseLength];
@@ -390,12 +390,12 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
     auto isFullScreen = *(PUINT32)(command + sizeof(UINT32) + sizeof(UINT32));
     LOG_INFO("Handling GetScreenshotCommand for display index: %u, quality: %u, isFullScreen: %u", displayIndex, quality, isFullScreen);
 
-    // Ensure the VNC context exists - create it if it doesn't, and validate the result
-    if (context->vncContext == nullptr)
-        context->vncContext = new VNCContext();
+    // Ensure the screen capture context exists - create it if it doesn't, and validate the result
+    if (context->screenCaptureContext == nullptr)
+        context->screenCaptureContext = new ScreenCaptureContext();
 
     // Getting the device list
-    if (context->vncContext->DeviceList.Count == 0)
+    if (context->screenCaptureContext->DeviceList.Count == 0)
     {
         auto displays = Screen::GetDevices();
         if (!displays)
@@ -404,16 +404,16 @@ VOID Handle_GetScreenshotCommand([[maybe_unused]] PCHAR command, [[maybe_unused]
             WriteErrorResponse(response, responseLength, StatusCode::StatusError);
             return;
         }
-        context->vncContext->DeviceList = displays.Value();
-        LOG_INFO("Display devices enumerated successfully with %u display(s)", context->vncContext->DeviceList.Count);
+        context->screenCaptureContext->DeviceList = displays.Value();
+        LOG_INFO("Display devices enumerated successfully with %u display(s)", context->screenCaptureContext->DeviceList.Count);
     }
 
-    const ScreenDevice &device = context->vncContext->DeviceList.Devices[displayIndex];
+    const ScreenDevice &device = context->screenCaptureContext->DeviceList.Devices[displayIndex];
 
-    if (context->vncContext->GraphicsList.count == 0)
-        context->vncContext->GraphicsList.Init(context->vncContext->DeviceList.Count);
+    if (context->screenCaptureContext->GraphicsList.count == 0)
+        context->screenCaptureContext->GraphicsList.Init(context->screenCaptureContext->DeviceList.Count);
 
-    Graphics &graphics = context->vncContext->GraphicsList.graphicsArray[displayIndex];
+    Graphics &graphics = context->screenCaptureContext->GraphicsList.graphicsArray[displayIndex];
 
     if (!graphics.IsInitialized())
         graphics.Init(device);

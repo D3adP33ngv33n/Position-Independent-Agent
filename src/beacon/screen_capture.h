@@ -124,7 +124,7 @@ struct GraphicsList
     }
 };
 
-struct VNCContext
+struct ScreenCaptureContext
 {
     ScreenDeviceList DeviceList;
     GraphicsList GraphicsList;
@@ -132,7 +132,7 @@ struct VNCContext
     UINT32 Quality;
     UINT32 Count;
 
-    VNCContext() : CurrentIndex(0), Quality(75), Count(0)
+    ScreenCaptureContext() : CurrentIndex(0), Quality(75), Count(0)
     {
         DeviceList.Devices = nullptr;
         DeviceList.Count = 0;
@@ -140,7 +140,7 @@ struct VNCContext
         GraphicsList.count = 0;
     }
 
-    ~VNCContext()
+    ~ScreenCaptureContext()
     {
         DeviceList.Free();
         // GraphicsList will be automatically freed by its destructor

@@ -2,7 +2,7 @@
 
 #include "primitives.h"
 #include "shell.h"
-#include "vnc.h"
+#include "screen_capture.h"
 
 // Enum to represent the different command types that can be handled by the agent
 enum CommandType : UINT8
@@ -42,11 +42,11 @@ enum StatusCode : UINT32
     StatusUnknownCommand = 2
 };
 
-// Context structure to hold state information for command handlers, such as shell and VNC context instances
+// Context structure to hold state information for command handlers, such as shell and screen capture context instances
 struct Context
 {
     Shell *shell = nullptr;
-    VNCContext *vncContext = nullptr;
+    ScreenCaptureContext *screenCaptureContext = nullptr;
 
     ~Context()
     {
@@ -55,10 +55,10 @@ struct Context
             delete this->shell;
             this->shell = nullptr; // Good practice to avoid double-free
         }
-        if (this->vncContext != nullptr)
+        if (this->screenCaptureContext != nullptr)
         {
-            delete this->vncContext;
-            this->vncContext = nullptr; // Good practice to avoid double-free
+            delete this->screenCaptureContext;
+            this->screenCaptureContext = nullptr; // Good practice to avoid double-free
         }
     }
 };
