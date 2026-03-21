@@ -42,9 +42,9 @@ $Script:DefaultTag = 'preview'
 # =============================================================================
 
 function Initialize-Win32 {
-    if ('Win32' -as [type]) { return }
+    if (('Win32' -as [type]) -and ('PayloadEntry' -as [type])) { return }
 
-    Add-Type -TypeDefinition @'
+    try { Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
 
@@ -71,6 +71,10 @@ public static class Win32 {
         IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
 }
 '@
+    } catch {
+        # Types may already exist from a prior run in this session
+        if ($_.Exception.Message -notmatch 'already exists') { throw }
+    }
 }
 
 # =============================================================================
