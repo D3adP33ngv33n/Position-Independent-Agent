@@ -9,7 +9,7 @@
  * Platform identification:
  * - GetAgentPlatform(): compile-time OS target from PLATFORM_* defines
  * - GetOSVersion(): runtime OS version via uname syscall (Linux/Android),
- *   sysctl (macOS/iOS/FreeBSD), utssys (Solaris), or "unknown" fallback
+ *   sysctl (macOS/iOS/FreeBSD), utssys then /etc/release (Solaris), or "unknown" fallback
  *
  * Future enhancements:
  * - macOS: use sysctl(kern.procargs2) to read process environment
@@ -286,13 +286,13 @@ USIZE Environment::GetOSVersion(Span<CHAR> buffer) noexcept
 		return pos;
 	}
 #elif defined(PLATFORM_SOLARIS)
-	// Use utssys syscall to get uname info
+	// Try utssys syscall first (works on illumos/OpenIndiana)
 	// utssys(buf, 0, UTS_UNAME=0)
 	{
 		SolarisUtsname uts;
 		Memory::Zero(&uts, sizeof(SolarisUtsname));
 		SSIZE ret = System::Call(SYS_UTSSYS, (USIZE)&uts, 0, 0);
-		if (ret == 0)
+		if (ret == 0 && uts.Sysname[0] != '\0')
 		{
 			// Format: "{sysname} {release}" e.g. "SunOS 5.11"
 			USIZE sysLen = StringUtils::Length(uts.Sysname);
@@ -307,6 +307,43 @@ USIZE Environment::GetOSVersion(Span<CHAR> buffer) noexcept
 			StringUtils::Copy(Span<CHAR>(buffer.Data() + pos, buffer.Size() - pos), Span<const CHAR>(uts.Release, relLen + 1));
 			pos += relLen;
 			return pos;
+		}
+	}
+
+	// Fallback: read /etc/release (always present on Oracle Solaris 11.4
+	// where utssys may be removed/repurposed)
+	{
+		const CHAR *path = "/etc/release";
+		SSIZE fd = System::Call(SYS_OPEN, (USIZE)path, 0 /* O_RDONLY */, 0);
+		if (fd < 0)
+			fd = System::Call(SYS_OPENAT, (USIZE)AT_FDCWD, (USIZE)path, 0, 0);
+		if (fd >= 0)
+		{
+			CHAR tmpBuf[256];
+			SSIZE bytesRead = System::Call(SYS_READ, (USIZE)fd, (USIZE)tmpBuf, sizeof(tmpBuf) - 1);
+			System::Call(SYS_CLOSE, (USIZE)fd);
+			if (bytesRead > 0)
+			{
+				tmpBuf[bytesRead] = '\0';
+
+				// Skip leading whitespace on first line
+				const CHAR *p = tmpBuf;
+				while (*p == ' ' || *p == '\t')
+					p++;
+
+				// Copy until newline or end
+				USIZE pos = 0;
+				while (*p != '\0' && *p != '\n' && pos < buffer.Size() - 1)
+					buffer.Data()[pos++] = *p++;
+
+				// Trim trailing whitespace
+				while (pos > 0 && (buffer.Data()[pos - 1] == ' ' || buffer.Data()[pos - 1] == '\t'))
+					pos--;
+
+				buffer.Data()[pos] = '\0';
+				if (pos > 0)
+					return pos;
+			}
 		}
 	}
 #endif
