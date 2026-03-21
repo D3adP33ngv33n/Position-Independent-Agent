@@ -128,8 +128,8 @@ private:
 
 		if (!result)
 		{
-#if defined(PLATFORM_UEFI)
-			// UEFI has no hostname concept
+#if defined(PLATFORM_UEFI) || defined(PLATFORM_SOLARIS)
+			// UEFI has no hostname concept; Solaris VM may have empty utssys nodename
 			LOG_INFO("  GetHostname not available on this platform (expected)");
 			return true;
 #else
@@ -217,8 +217,8 @@ private:
 		// Hostname may not be available on all platforms
 		if (info.Hostname[0] == '\0')
 		{
-#if defined(PLATFORM_UEFI)
-			LOG_INFO("  SystemInfo.Hostname empty (expected on UEFI)");
+#if defined(PLATFORM_UEFI) || defined(PLATFORM_SOLARIS)
+			LOG_INFO("  SystemInfo.Hostname empty (expected on this platform)");
 #else
 			LOG_ERROR("SystemInfo.Hostname is empty");
 			return false;
