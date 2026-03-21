@@ -8,8 +8,8 @@
  *
  * Platform identification:
  * - GetAgentPlatform(): compile-time OS target from PLATFORM_* defines
- * - GetOSVersion(): runtime OS version via uname syscall (Linux/Android)
- *   or /proc/version fallback (other POSIX platforms)
+ * - GetOSVersion(): runtime OS version via uname syscall (Linux/Android),
+ *   sysctl (macOS/iOS/FreeBSD), utssys (Solaris), or "unknown" fallback
  *
  * Future enhancements:
  * - macOS: use sysctl(kern.procargs2) to read process environment
@@ -20,16 +20,30 @@
 #include "platform/system/environment.h"
 #include "core/string/string.h"
 
-#if defined(PLATFORM_LINUX) || defined(PLATFORM_ANDROID)
-
+// Platform-specific kernel headers
 #if defined(PLATFORM_ANDROID)
 #include "platform/kernel/android/syscall.h"
 #include "platform/kernel/android/system.h"
-#else
+#elif defined(PLATFORM_LINUX)
 #include "platform/kernel/linux/syscall.h"
 #include "platform/kernel/linux/system.h"
+#elif defined(PLATFORM_MACOS)
+#include "platform/kernel/macos/syscall.h"
+#include "platform/kernel/macos/system.h"
+#elif defined(PLATFORM_IOS)
+#include "platform/kernel/ios/syscall.h"
+#include "platform/kernel/ios/system.h"
+#elif defined(PLATFORM_FREEBSD)
+#include "platform/kernel/freebsd/syscall.h"
+#include "platform/kernel/freebsd/system.h"
+#elif defined(PLATFORM_SOLARIS)
+#include "platform/kernel/solaris/syscall.h"
+#include "platform/kernel/solaris/system.h"
 #endif
+
 #include "core/memory/memory.h"
+
+#if defined(PLATFORM_LINUX) || defined(PLATFORM_ANDROID)
 
 // Helper to compare strings (case-sensitive for Linux)
 static BOOL CompareEnvName(const CHAR *envEntry, const CHAR *name) noexcept
@@ -201,10 +215,8 @@ USIZE Environment::GetOSVersion(Span<CHAR> buffer) noexcept
 		pos += relLen;
 		return pos;
 	}
-#endif
 
-	// Fallback: try reading /proc/version via raw syscalls (Linux/Android only)
-#if defined(PLATFORM_LINUX) || defined(PLATFORM_ANDROID)
+	// Fallback: try reading /proc/version via raw syscalls
 	{
 		const CHAR *path = "/proc/version";
 #if defined(ARCHITECTURE_AARCH64) || defined(ARCHITECTURE_RISCV64) || defined(ARCHITECTURE_RISCV32)
@@ -225,6 +237,76 @@ USIZE Environment::GetOSVersion(Span<CHAR> buffer) noexcept
 					buffer.Data()[bytesRead] = '\0';
 				return StringUtils::Length(buffer.Data());
 			}
+		}
+	}
+#elif defined(PLATFORM_MACOS) || defined(PLATFORM_IOS) || defined(PLATFORM_FREEBSD)
+	// Use sysctl to query kern.ostype and kern.osrelease
+	// sysctl(name, namelen, oldp, oldlenp, newp, newlen)
+	{
+		INT32 mib[2];
+		CHAR ostype[128];
+		CHAR osrelease[128];
+		USIZE len;
+
+		// CTL_KERN=1, KERN_OSTYPE=1 → e.g. "Darwin" or "FreeBSD"
+		mib[0] = 1;
+		mib[1] = 1;
+		len = sizeof(ostype) - 1;
+		Memory::Zero(ostype, sizeof(ostype));
+		SSIZE ret = System::Call(SYS_SYSCTL, (USIZE)mib, 2, (USIZE)ostype, (USIZE)&len, 0, 0);
+		if (ret < 0)
+		{
+			StringUtils::Copy(buffer, Span<const CHAR>("unknown"));
+			return StringUtils::Length(buffer.Data());
+		}
+
+		// CTL_KERN=1, KERN_OSRELEASE=2 → e.g. "23.1.0" or "14.0-RELEASE"
+		mib[1] = 2;
+		len = sizeof(osrelease) - 1;
+		Memory::Zero(osrelease, sizeof(osrelease));
+		ret = System::Call(SYS_SYSCTL, (USIZE)mib, 2, (USIZE)osrelease, (USIZE)&len, 0, 0);
+		if (ret < 0)
+		{
+			StringUtils::Copy(buffer, Span<const CHAR>("unknown"));
+			return StringUtils::Length(buffer.Data());
+		}
+
+		// Format: "{ostype} {osrelease}" e.g. "Darwin 23.1.0"
+		USIZE sysLen = StringUtils::Length(ostype);
+		USIZE relLen = StringUtils::Length(osrelease);
+		USIZE pos = 0;
+
+		StringUtils::Copy(Span<CHAR>(buffer.Data() + pos, buffer.Size() - pos), Span<const CHAR>(ostype, sysLen + 1));
+		pos += sysLen;
+
+		buffer.Data()[pos++] = ' ';
+
+		StringUtils::Copy(Span<CHAR>(buffer.Data() + pos, buffer.Size() - pos), Span<const CHAR>(osrelease, relLen + 1));
+		pos += relLen;
+		return pos;
+	}
+#elif defined(PLATFORM_SOLARIS)
+	// Use utssys syscall to get uname info
+	// utssys(buf, 0, UTS_UNAME=0)
+	{
+		SolarisUtsname uts;
+		Memory::Zero(&uts, sizeof(SolarisUtsname));
+		SSIZE ret = System::Call(SYS_UTSSYS, (USIZE)&uts, 0, 0);
+		if (ret == 0)
+		{
+			// Format: "{sysname} {release}" e.g. "SunOS 5.11"
+			USIZE sysLen = StringUtils::Length(uts.Sysname);
+			USIZE relLen = StringUtils::Length(uts.Release);
+			USIZE pos = 0;
+
+			StringUtils::Copy(Span<CHAR>(buffer.Data() + pos, buffer.Size() - pos), Span<const CHAR>(uts.Sysname, sysLen + 1));
+			pos += sysLen;
+
+			buffer.Data()[pos++] = ' ';
+
+			StringUtils::Copy(Span<CHAR>(buffer.Data() + pos, buffer.Size() - pos), Span<const CHAR>(uts.Release, relLen + 1));
+			pos += relLen;
+			return pos;
 		}
 	}
 #endif

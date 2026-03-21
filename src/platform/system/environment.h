@@ -59,7 +59,8 @@ public:
 	 * @details Returns a human-readable OS version string detected at runtime:
 	 * - Windows: "Windows {Major}.{Minor} Build {Build}" from PEB fields
 	 * - Linux/Android: "{sysname} {release}" from the uname syscall
-	 * - Other POSIX: best-effort read from /proc/version, or "unknown"
+	 * - macOS/iOS/FreeBSD: "{ostype} {osrelease}" from sysctl
+	 * - Solaris: "{sysname} {release}" from utssys syscall
 	 * - UEFI: "uefi"
 	 */
 	static USIZE GetOSVersion(Span<CHAR> buffer) noexcept;
