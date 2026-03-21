@@ -344,7 +344,7 @@ src/
 
 All system interaction is through direct syscalls (NT Native API on Windows, inline assembly on POSIX, Boot Services on UEFI). A custom LLVM pass ([pic-transform](tools/pic-transform/)) eliminates data sections at compile time, ensuring only a `.text` section in the final binary.
 
-See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the full project structure and source tree layout.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full project structure and source tree layout.
 
 ## Project Structure
 
@@ -492,7 +492,7 @@ The `-fno-jump-tables` flag is particularly critical - without it, `switch` stat
 - [CMake](https://cmake.org/) 3.20+
 - [Ninja](https://ninja-build.org/) 1.10+
 
-> **Windows users:** Build under WSL. See [CONTRIBUTING.md](.github/CONTRIBUTING.md#toolchain-installation) for detailed setup instructions.
+> **Windows users:** Build under WSL. See [CONTRIBUTING.md](CONTRIBUTING.md#toolchain-installation) for detailed setup instructions.
 
 ---
 
@@ -650,7 +650,7 @@ This project is designed for execution environments where traditional runtime as
 
 ## Roadmap
 
-This project is a work in progress. Contributions are welcome - see [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+This project is a work in progress. Contributions are welcome - see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Planned Platforms
 - NetBSD, OpenBSD, HaikuOS, QNX
@@ -668,9 +668,9 @@ This project is a work in progress. Contributions are welcome - see [CONTRIBUTIN
 
 We welcome contributions of all kinds. Please read:
 
-- [Contributing Guide](.github/CONTRIBUTING.md) - build instructions, code style, project structure
-- [Code of Conduct](.github/CODE_OF_CONDUCT.md) - community standards
-- [Security Policy](.github/SECURITY.md) - reporting vulnerabilities
+- [Contributing Guide](CONTRIBUTING.md) - build instructions, code style, project structure
+- [Code of Conduct](CODE_OF_CONDUCT.md) - community standards
+- [Security Policy](SECURITY.md) - reporting vulnerabilities
 
 ---
 
