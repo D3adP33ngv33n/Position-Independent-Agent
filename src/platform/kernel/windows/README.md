@@ -2,7 +2,7 @@
 
 # Windows NT Kernel Interface
 
-Position-independent Windows NT kernel layer providing direct system call dispatch, PEB-based module resolution, PE export parsing, and Win32 API wrappers — all without any dependency on the Windows SDK, CRT, or static import tables.
+Position-independent Windows NT kernel layer: direct syscall dispatch, PEB-based module resolution, PE export parsing, and Win32 API wrappers — no Windows SDK, no CRT, no static import tables.
 
 ## Architecture Support
 

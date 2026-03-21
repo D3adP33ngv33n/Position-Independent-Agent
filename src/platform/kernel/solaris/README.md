@@ -2,7 +2,7 @@
 
 # Solaris Kernel Interface
 
-Position-independent Solaris/illumos syscall layer supporting **3 architectures**. Solaris has unique syscall conventions inherited from SVR4 — including `int $0x91` on i386, multiplexed process/group syscalls, and aggressive legacy syscall removal in Solaris 11.4.
+Position-independent Solaris/illumos syscall layer supporting **3 architectures**. Unique SVR4 conventions: `int $0x91` trap gate on i386, multiplexed process/group syscalls, and aggressive legacy syscall removal in Solaris 11.4.
 
 ## The `int $0x91` Trap Gate (i386)
 

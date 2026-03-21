@@ -2,11 +2,11 @@
 
 # TCP Socket Networking
 
-Platform-independent TCP stream sockets supporting IPv4 and IPv6. Each platform uses a fundamentally different networking interface — POSIX sockets, the Windows AFD driver, or UEFI TCP protocols.
+Platform-independent TCP stream sockets supporting IPv4 and IPv6. Three fundamentally different networking interfaces: POSIX sockets, the Windows AFD driver, and UEFI TCP protocols.
 
 ## Windows: Bypassing Winsock via the AFD Driver
 
-The most interesting implementation. Instead of using the Winsock2 API (`WSAStartup`, `WSASocket`, etc.), the runtime talks directly to the **Ancillary Function Driver (AFD)** — the kernel-mode driver that Winsock itself calls internally.
+Instead of the Winsock2 API (`WSAStartup`, `WSASocket`, etc.), the runtime talks directly to the **Ancillary Function Driver (AFD)** — the kernel-mode driver that Winsock itself calls internally.
 
 ### How AFD Sockets Work
 

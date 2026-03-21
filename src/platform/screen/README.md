@@ -2,7 +2,7 @@
 
 # Screen Capture
 
-Platform-independent display enumeration and framebuffer capture. Each platform uses a completely different graphics subsystem — this module abstracts five fundamentally different capture mechanisms behind a single `Screen::Capture()` interface.
+Platform-independent display enumeration and framebuffer capture. Five fundamentally different graphics subsystems abstracted behind a single `Screen::Capture()` interface.
 
 ## Windows: GDI BitBlt Pipeline
 

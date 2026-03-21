@@ -2,11 +2,11 @@
 
 # Linux Kernel Interface
 
-Position-independent Linux syscall layer supporting **7 architectures** — the widest architecture coverage of any platform in the project. Each architecture has its own trap instruction, register convention, syscall number table, and in some cases fundamentally different error handling.
+Position-independent Linux syscall layer supporting **7 architectures** — the widest architecture coverage in the project. Each architecture has its own trap instruction, register convention, syscall number table, and in some cases a fundamentally different error model.
 
 ## Error Handling: Negative Return vs $A3 Flag
 
-Linux uses the **negative return** model on all architectures except MIPS:
+All architectures except MIPS use the **negative return** model:
 
 ```
 Return >= 0  →  success (value is the result)
@@ -81,7 +81,7 @@ mov x0, arg1                   ; x0-x5 for arguments
 svc #0                         ; supervisor call
 ```
 
-No register clobbering complications. AArch64 exclusively uses the **modern syscall table** — no legacy `open`, `stat`, `unlink`, `mkdir`, `fork`, `dup2`, `pipe`. Must use `openat`, `fstatat`, `unlinkat`, `mkdirat`, `clone`, `dup3`, `pipe2` with `AT_FDCWD` (-100).
+Clean design with no register clobbering. AArch64 exclusively uses the **modern syscall table** — no legacy `open`/`stat`/`unlink`/`mkdir`/`fork`/`dup2`/`pipe`. Must use `openat`/`fstatat`/`unlinkat`/`mkdirat`/`clone`/`dup3`/`pipe2` with `AT_FDCWD` (-100).
 
 ### ARMv7-A: Syscall Number in R7
 
@@ -107,7 +107,7 @@ Same modern-only syscall table as AArch64. **RISC-V 32 has no 32-bit time syscal
 
 ## Syscall Number Divergence
 
-Unlike BSD systems (where syscall numbers are shared across architectures), Linux assigns **different numbers per architecture**. Some examples:
+Unlike BSD (shared syscall numbers across architectures), Linux assigns **different numbers per architecture**:
 
 | Syscall | x86_64 | i386 | AArch64 | MIPS64 |
 |---|---|---|---|---|
@@ -124,7 +124,7 @@ MIPS64 numbers start at **5000** (5000 + original SVR4 number).
 
 ## Constant Value Divergence
 
-Even POSIX "constants" vary across architectures due to historical ABI inheritance:
+POSIX "constants" vary across architectures due to historical ABI inheritance:
 
 | Constant | Generic | MIPS64 | Notes |
 |---|---|---|---|

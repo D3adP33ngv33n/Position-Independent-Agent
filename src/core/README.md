@@ -34,23 +34,22 @@ constexpr UINT64 Hash(const TChar* str) {
 
 Characters are lowercased before hashing — essential for Windows PE export name resolution where `"KERNEL32.DLL"` and `"kernel32.dll"` must produce the same hash.
 
-## Base64: Branchless Without Lookup Tables
+## Base64: Lookup-Table-Free Encoding
 
 **File:** `algorithms/base64.h`, `algorithms/base64.cc`
 
-Standard lookup tables (`A-Za-z0-9+/`) would live in `.rdata`. Instead, the encoder uses arithmetic offset selection:
+Standard Base64 implementations use a 64-byte lookup table (`A-Za-z0-9+/`) that would land in `.rdata`. Instead, the encoder computes output characters via arithmetic offset selection — no table, no data section dependency:
 
 ```c
-// Instead of: table[value]
-// Uses conditional arithmetic to compute the character:
-if (value < 26)      return value + 'A';
-else if (value < 52) return value - 26 + 'a';
-else if (value < 62) return value - 52 + '0';
+// Arithmetic character mapping — replaces the standard 64-byte lookup table:
+if (value < 26)      return value + 'A';       // A-Z
+else if (value < 52) return value - 26 + 'a';  // a-z
+else if (value < 62) return value - 52 + '0';  // 0-9
 else if (value == 62) return '+';
 else                  return '/';
 ```
 
-The decoder returns `0xFF` for invalid characters, enabling inline error detection without separate validation passes. RFC 4648 compliant with proper padding handling.
+The decoder returns `0xFF` for invalid characters, enabling inline error detection without separate validation passes. RFC 4648 compliant with proper `=` padding handling.
 
 ## String Operations: UTF-8 ↔ UTF-16 Without ICU
 

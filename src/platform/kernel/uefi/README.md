@@ -2,7 +2,7 @@
 
 # UEFI Firmware Interface
 
-Position-independent UEFI 2.10 interface for **x86_64** and **AArch64**. Fundamentally different from every other platform — UEFI has no syscalls, no kernel transitions, and no process model. Everything is done through **firmware-provided function pointer tables** called protocols.
+Position-independent UEFI 2.10 interface for **x86_64** and **AArch64**. Fundamentally different from all other platforms — no syscalls, no kernel transitions, no process model. All functionality accessed through **firmware-provided function pointer tables** (protocols).
 
 ## No Syscalls: Protocol Function Tables
 
@@ -47,7 +47,7 @@ shl rdx, 32
 or rax, rdx               ; combine into 64-bit pointer
 ```
 
-**Why not `WRGSBASE`/`RDGSBASE`?** Those instructions require `CR4.FSGSBASE` to be enabled. UEFI firmware may not set this bit. But UEFI runs in ring 0, where `WRMSR`/`RDMSR` always work — they're privileged instructions available without any CR4 configuration.
+**Why `WRMSR` instead of `WRGSBASE`?** `WRGSBASE`/`RDGSBASE` require `CR4.FSGSBASE`, which firmware may not enable. `WRMSR`/`RDMSR` are privileged instructions that always work in ring 0 — no CR4 configuration needed.
 
 ### AArch64: TPIDR_EL0
 

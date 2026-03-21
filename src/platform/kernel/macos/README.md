@@ -2,7 +2,7 @@
 
 # macOS (XNU) Kernel Interface
 
-Position-independent macOS/XNU syscall layer for **x86_64** and **AArch64** (Apple Silicon). Combines BSD syscalls, Mach kernel traps, and a custom dyld framework resolution system that parses Mach-O binaries to locate `dlopen`/`dlsym` at runtime.
+Position-independent macOS/XNU syscall layer for **x86_64** and **AArch64** (Apple Silicon). Combines BSD syscalls, Mach kernel traps, and runtime dyld framework resolution via Mach-O binary parsing to locate `dlopen`/`dlsym` without link-time dependencies.
 
 ## XNU Dual-Personality Kernel
 
@@ -79,11 +79,7 @@ svc #0x80
 
 ## Dynamic Framework Resolution via dyld
 
-The most sophisticated technique in the macOS layer. Frameworks like CoreGraphics are loaded at runtime without any link-time dependency — not even on libSystem.
-
-### The Problem
-
-Position-independent code can't have import tables pointing to system frameworks. But macOS doesn't have a PEB-like structure to walk loaded modules. The solution: use Mach IPC to find dyld, parse its Mach-O symbol table to extract `_dlopen` and `_dlsym`, then use those to load frameworks.
+The most complex technique in the macOS layer. Position-independent code can't have import tables pointing to system frameworks, and macOS lacks a PEB-like structure to walk loaded modules. The solution: use Mach IPC to find dyld, parse its Mach-O symbol table to extract `_dlopen` and `_dlsym`, then use those to load frameworks.
 
 ### Resolution Flow
 

@@ -2,7 +2,7 @@
 
 # Platform Layer
 
-Cross-platform abstraction layer providing OS-independent interfaces for I/O, networking, memory, display, and process management. Every implementation uses **direct syscalls and firmware protocols** — no CRT, no SDK, no libc dependencies.
+Cross-platform abstraction providing OS-independent interfaces for I/O, networking, memory, display, and process management. Every implementation uses **direct syscalls or firmware protocols** — no CRT, no SDK, no libc.
 
 ## Architecture
 
@@ -20,8 +20,8 @@ Cross-platform abstraction layer providing OS-independent interfaces for I/O, ne
 │                         Kernel Interface                             │
 │  ┌─────────┬─────────┬───────┬─────┬─────────┬────────┬──────────┐  │
 │  │ Windows │  Linux  │FreeBSD│macOS│ Solaris  │  UEFI  │ Android  │  │
-│  │ PEB/PE  │ syscall │ int80 │ XNU │ int 0x91 │Protocol│ (Linux)  │  │
-│  │ Indirect│ svc/int │ svc   │svc80│ svc/ecall│ Tables │          │  │
+│  │ PEB/PE  │ syscall │syscall│ XNU │ int 0x91 │Protocol│ (Linux)  │  │
+│  │ Indirect│ svc/int │int 80 │svc80│ svc/ecall│ Tables │          │  │
 │  │ Syscall │ ecall   │ ecall │     │          │        │  iOS     │  │
 │  └─────────┴─────────┴───────┴─────┴─────────┴────────┴──────────┘  │
 └──────────────────────────────────────────────────────────────────────┘

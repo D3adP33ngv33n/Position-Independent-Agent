@@ -30,7 +30,7 @@ The codebase is organized in four layers, each building on the one below. No lay
 
 ### Layer 1: [Core](core/README.md)
 
-Build-unique DJB2 seeding via FNV-1a, branchless Base64 without lookup tables, UTF-8/UTF-16 surrogate pairs, word-at-a-time memset/memcpy, xorshift64 PRNG, zero-cost Result type.
+Build-unique DJB2 seeding via FNV-1a, lookup-table-free Base64, UTF-8/UTF-16 surrogate pairs, word-at-a-time memset/memcpy, xorshift64 PRNG, zero-cost `Result<T,E>` type.
 
 ### Layer 2: [Platform](platform/README.md)
 
@@ -39,7 +39,7 @@ Build-unique DJB2 seeding via FNV-1a, branchless Base64 without lookup tables, U
 - [Memory](platform/memory/README.md) — Size-header trick for `munmap`, `mmap2` page-shift, FreeBSD i386 inline asm
 - [Screen](platform/screen/README.md) — Linux three-tier capture (X11→DRM→fbdev), macOS fork-based crash isolation
 - [Socket](platform/socket/README.md) — Windows AFD driver, UEFI busy-poll async, i386 socketcall multiplexer
-- [System](platform/system/README.md) — 5 PTY creation variants, PEB environment walking, SMBIOS UUID
+- [System](platform/system/README.md) — 5 PTY creation variants, PEB environment walking, SMBIOS UUID, compile-time system identity
 
 ### Layer 2: Kernel Interfaces
 
@@ -55,7 +55,7 @@ Build-unique DJB2 seeding via FNV-1a, branchless Base64 without lookup tables, U
 
 ### Layer 3: [Libraries](lib/README.md)
 
-Traits-based SHA-2, constant-time ECC Montgomery ladder, branchless ChaCha20-Poly1305, full TLS 1.3 handshake with HKDF key schedule, DNS-over-HTTPS, WebSocket RFC 6455, fast DCT JPEG.
+Traits-based SHA-2, constant-time ECC Montgomery ladder, fully branchless ChaCha20-Poly1305, complete TLS 1.3 handshake with HKDF key schedule, DNS-over-HTTPS, WebSocket RFC 6455, Arai-Agui-Nakajima fast DCT JPEG.
 
 ### Layer 4: [Beacon](beacon/README.md)
 

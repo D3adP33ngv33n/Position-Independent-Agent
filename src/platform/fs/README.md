@@ -2,7 +2,7 @@
 
 # Filesystem Operations
 
-Platform-independent filesystem abstraction for file I/O, directory enumeration, and path manipulation. Every operation goes through raw kernel syscalls — no `fopen`, no `opendir`, no `FindFirstFile`.
+Platform-independent filesystem abstraction for file I/O, directory enumeration, and path manipulation. All operations go through raw kernel syscalls — no `fopen`, no `opendir`, no `FindFirstFile`.
 
 ## RAII File Handle
 

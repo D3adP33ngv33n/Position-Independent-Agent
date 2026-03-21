@@ -40,7 +40,7 @@ UEFI's `EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL→OutputString` accepts `CHAR16*` (equiv
 
 ## Formatted Output
 
-`Console::WriteFormatted<TChar, Args...>(format, args...)` is a type-safe variadic template formatter — no format string parsing at runtime like `printf`. The compiler generates specialized code for each argument type combination.
+`Console::WriteFormatted<TChar, Args...>(format, args...)` is a type-safe variadic template formatter. Unlike `printf`, format specifier dispatch is resolved at compile time — the compiler generates specialized code for each argument type combination.
 
 ## Logger
 

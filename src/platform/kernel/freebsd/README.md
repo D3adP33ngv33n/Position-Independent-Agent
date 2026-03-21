@@ -2,7 +2,7 @@
 
 # FreeBSD Kernel Interface
 
-Position-independent FreeBSD syscall layer supporting **4 architectures** with BSD carry-flag error semantics. FreeBSD shares syscall numbers across all architectures (unlike Linux), but each architecture has distinct calling conventions and error signaling mechanisms.
+Position-independent FreeBSD syscall layer supporting **4 architectures** with BSD carry-flag error semantics. Syscall numbers are shared across all architectures (unlike Linux), but calling conventions and error signaling mechanisms differ per architecture.
 
 ## Error Handling: The Carry Flag Pattern
 
