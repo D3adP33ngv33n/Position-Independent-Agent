@@ -10,6 +10,8 @@
  * - GetAgentPlatform(): compile-time OS target from PLATFORM_* defines
  * - GetOSVersion(): runtime OS version via uname syscall (Linux/Android),
  *   sysctl (macOS/iOS/FreeBSD), utssys then /etc/release (Solaris), or "unknown" fallback
+ * - GetHostname(): HOSTNAME env var (Linux/Android), /etc/hostname (Linux/Android),
+ *   sysctl kern.hostname (macOS/iOS/FreeBSD), utssys then /etc/nodename (Solaris)
  *
  * Future enhancements:
  * - macOS: use sysctl(kern.procargs2) to read process environment
@@ -354,13 +356,13 @@ USIZE Environment::GetOSVersion(Span<CHAR> buffer) noexcept
 
 USIZE Environment::GetHostname(Span<CHAR> buffer) noexcept
 {
-	// Try HOSTNAME environment variable first
+	// Try HOSTNAME environment variable first (works on Linux/Android)
 	USIZE len = Environment::GetVariable("HOSTNAME", buffer);
 	if (len > 0)
 		return len;
 
-	// Fallback: read /etc/hostname
 #if defined(PLATFORM_LINUX) || defined(PLATFORM_ANDROID)
+	// Fallback: read /etc/hostname
 	{
 		const CHAR *path = "/etc/hostname";
 #if defined(ARCHITECTURE_AARCH64) || defined(ARCHITECTURE_RISCV64) || defined(ARCHITECTURE_RISCV32)
@@ -380,6 +382,55 @@ USIZE Environment::GetHostname(Span<CHAR> buffer) noexcept
 				else
 					buffer.Data()[bytesRead] = '\0';
 				return StringUtils::Length(buffer.Data());
+			}
+		}
+	}
+#elif defined(PLATFORM_MACOS) || defined(PLATFORM_IOS) || defined(PLATFORM_FREEBSD)
+	// Use sysctl to query kern.hostname
+	// sysctl({CTL_KERN=1, KERN_HOSTNAME=10}, ...)
+	{
+		INT32 mib[2];
+		mib[0] = 1;   // CTL_KERN
+		mib[1] = 10;  // KERN_HOSTNAME
+		USIZE slen = buffer.Size() - 1;
+		Memory::Zero(buffer.Data(), buffer.Size());
+		SSIZE ret = System::Call(SYS_SYSCTL, (USIZE)mib, 2, (USIZE)buffer.Data(), (USIZE)&slen, 0, 0);
+		if (ret == 0 && buffer.Data()[0] != '\0')
+			return StringUtils::Length(buffer.Data());
+	}
+#elif defined(PLATFORM_SOLARIS)
+	// Try utssys nodename field (works on illumos)
+	{
+		SolarisUtsname uts;
+		Memory::Zero(&uts, sizeof(SolarisUtsname));
+		SSIZE ret = System::Call(SYS_UTSSYS, (USIZE)&uts, 0, 0);
+		if (ret == 0 && uts.Nodename[0] != '\0')
+		{
+			USIZE nodeLen = StringUtils::Length(uts.Nodename);
+			StringUtils::Copy(buffer, Span<const CHAR>(uts.Nodename, nodeLen + 1));
+			return nodeLen;
+		}
+	}
+
+	// Fallback: read /etc/nodename (present on Oracle Solaris 11.4)
+	{
+		const CHAR *path = "/etc/nodename";
+		SSIZE fd = System::Call(SYS_OPEN, (USIZE)path, 0 /* O_RDONLY */, 0);
+		if (fd < 0)
+			fd = System::Call(SYS_OPENAT, (USIZE)AT_FDCWD, (USIZE)path, 0, 0);
+		if (fd >= 0)
+		{
+			SSIZE bytesRead = System::Call(SYS_READ, (USIZE)fd, (USIZE)buffer.Data(), buffer.Size() - 1);
+			System::Call(SYS_CLOSE, (USIZE)fd);
+			if (bytesRead > 0)
+			{
+				// Trim trailing newline
+				if (buffer.Data()[bytesRead - 1] == '\n')
+					buffer.Data()[bytesRead - 1] = '\0';
+				else
+					buffer.Data()[bytesRead] = '\0';
+				if (buffer.Data()[0] != '\0')
+					return StringUtils::Length(buffer.Data());
 			}
 		}
 	}

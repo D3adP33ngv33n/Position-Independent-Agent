@@ -126,8 +126,8 @@ The `Environment` class provides compile-time and runtime system identification 
 |---|---|---|
 | **Windows** | PEB `OSMajorVersion`/`OSMinorVersion`/`OSBuildNumber` | `COMPUTERNAME` env var |
 | **Linux/Android** | `uname` syscall | `HOSTNAME` env var / `/etc/hostname` |
-| **macOS/FreeBSD/iOS** | `sysctl` (kern.ostype + kern.osrelease) | `HOSTNAME` env var |
-| **Solaris** | `utssys` → `/etc/release` fallback | `HOSTNAME` env var |
+| **macOS/iOS/FreeBSD** | `sysctl` (kern.ostype + kern.osrelease) | `sysctl` kern.hostname |
+| **Solaris** | `utssys` → `/etc/release` fallback | `utssys` nodename → `/etc/nodename` |
 | **UEFI** | `"uefi"` (static) | `"unknown"` |
 
 ## Pseudo-Terminal (PTY) Creation
@@ -253,7 +253,7 @@ End-of-prompt detection: `'>'` on Windows (cmd.exe), `'$'` on POSIX (sh).
 | Random | `RDTSC` seed | `RDTSC`/`CNTVCT`/`RDTIME` seed | Same |
 | MachineID | SMBIOS UUID | `/etc/machine-id` | Stub |
 | Environment | PEB block walk | `/proc/self/environ` | Stub |
-| Hostname | `COMPUTERNAME` env var | `HOSTNAME` env / `/etc/hostname` | Stub |
+| Hostname | `COMPUTERNAME` env var | env/file/`sysctl`/`utssys` | Stub |
 | OSVersion | PEB version fields | `uname`/`sysctl`/`utssys`+`/etc/release` | `"uefi"` |
 | Pipe | `CreatePipe` | `pipe()`/`pipe2()` | Not supported |
 | Process | `CreateProcessW` | `fork()`+`execve()` | Not supported |

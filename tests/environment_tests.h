@@ -20,6 +20,7 @@ public:
 		RunTest(allPassed, &TestGetOSVersion, "GetOSVersion returns non-empty string");
 		RunTest(allPassed, &TestGetOSVersionNotUnknown, "GetOSVersion returns actual version info");
 		RunTest(allPassed, &TestGetHostname, "GetHostname returns non-empty string");
+		RunTest(allPassed, &TestGetHostnameNotUnknown, "GetHostname returns actual hostname");
 		RunTest(allPassed, &TestGetArchitecture, "GetArchitecture returns known architecture");
 		RunTest(allPassed, &TestSystemInfoPopulated, "SystemInfo fields are populated");
 
@@ -162,6 +163,26 @@ private:
 		}
 
 		LOG_INFO("  Hostname: %s (len=%llu)", buffer, (UINT64)len);
+		return true;
+	}
+
+	static BOOL TestGetHostnameNotUnknown()
+	{
+		CHAR buffer[256];
+		Memory::Zero(buffer, sizeof(buffer));
+
+		Environment::GetHostname(Span<CHAR>(buffer, 255));
+
+		// On actual OS targets (not UEFI), we should get a real hostname,
+		// not "unknown".
+#if !defined(PLATFORM_UEFI)
+		if (StringUtils::Equals(buffer, "unknown"))
+		{
+			LOG_ERROR("GetHostname returned 'unknown' on a real OS");
+			return false;
+		}
+#endif
+
 		return true;
 	}
 
