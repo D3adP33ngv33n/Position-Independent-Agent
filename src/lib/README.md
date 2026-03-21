@@ -2,7 +2,7 @@
 
 # Libraries
 
-Cryptography, TLS 1.3, HTTP, WebSocket, DNS-over-HTTPS, and JPEG encoding — all implemented from scratch without any external dependencies.
+Cryptography, TLS 1.3, HTTP, WebSocket, DNS-over-HTTPS, and JPEG encoding — implemented from scratch with no external dependencies.
 
 ## Cryptography
 
@@ -66,7 +66,7 @@ Full ECC implementation for TLS 1.3 key exchange:
 
 **File:** `network/tls/tls_client.h`, `tls_cipher.h`, `tls_hkdf.h`
 
-Complete TLS 1.3 client (RFC 8446) with no external dependencies:
+Complete TLS 1.3 client (RFC 8446):
 
 ### Handshake Flow
 
@@ -123,7 +123,7 @@ TLS records may arrive fragmented or interleaved. The channel buffer reassembles
 
 **File:** `network/dns/dns_client.h`
 
-DNS queries are sent over HTTPS (RFC 8484) to prevent DNS snooping:
+DNS queries sent over HTTPS (RFC 8484) to prevent DNS snooping:
 
 ```
 1. Build DNS wire-format query (RFC 1035): QNAME + QTYPE + QCLASS
@@ -177,7 +177,7 @@ Ping frames trigger automatic Pong responses. Close frames initiate graceful shu
 
 **File:** `image/jpeg_encoder.h`
 
-Full JPEG encoding pipeline for screen capture compression:
+JPEG encoding pipeline for screen capture compression:
 
 ```
 RGB pixels → 8×8 blocks → color space → DCT → quantization → zigzag → Huffman → JFIF
@@ -191,4 +191,4 @@ Uses the Arai–Agui–Nakajima algorithm — a scaled integer DCT that requires
 
 JPEG data is written through a callback function (`bool (*writer)(void* ctx, const UINT8* data, UINT32 len)`), enabling direct streaming to the WebSocket without buffering the entire compressed image in memory.
 
-Quantization tables are quality-scaled (1-100 range) per JPEG Annex K. Standard Huffman tables from Annex K.3 are used (no custom table optimization — trades compression ratio for simplicity).
+Quantization tables are quality-scaled (1-100) per JPEG Annex K. Standard Huffman tables from Annex K.3 (no custom table optimization — trades compression ratio for code simplicity).

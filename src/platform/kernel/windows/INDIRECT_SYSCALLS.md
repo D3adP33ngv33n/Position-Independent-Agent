@@ -4,7 +4,7 @@
 
 **Files:** [`system.h`](system.h), [`system.cc`](system.cc), [`system.x86_64.h`](system.x86_64.h), [`system.i386.h`](system.i386.h), [`system.aarch64.h`](system.aarch64.h), [`system.armv7a.h`](system.armv7a.h)
 
-Runtime System Service Number (SSN) resolution and architecture-specific indirect syscall dispatch. System calls are routed through instruction gadgets found within ntdll.dll, so the `syscall`/`svc` instruction executes from ntdll's address range rather than from our code.
+Runtime SSN (System Service Number) resolution and architecture-specific indirect syscall dispatch. System calls are routed through instruction gadgets within ntdll.dll — the `syscall`/`svc` instruction executes from ntdll's address range, not from the agent's code.
 
 ---
 

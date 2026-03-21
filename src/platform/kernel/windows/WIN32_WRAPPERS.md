@@ -4,7 +4,7 @@
 
 **Files:** [`kernel32.h`](kernel32.h), [`kernel32.cc`](kernel32.cc), [`user32.h`](user32.h), [`user32.cc`](user32.cc), [`gdi32.h`](gdi32.h), [`gdi32.cc`](gdi32.cc)
 
-Higher-level wrappers around Win32 DLL exports for process management, display enumeration, and graphics operations. All function addresses are resolved dynamically at call time via DJB2 hash-based [PEB module lookup](PEB_WALKING.md) and [PE export resolution](PE_PARSING.md).
+Win32 DLL wrappers for process management, display enumeration, and graphics operations. All function addresses resolved dynamically at call time via DJB2 hash-based [PEB module lookup](PEB_WALKING.md) and [PE export resolution](PE_PARSING.md).
 
 ---
 

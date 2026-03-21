@@ -4,7 +4,7 @@
 
 **Files:** [`pe.h`](pe.h), [`pe.cc`](pe.cc)
 
-Runtime parsing of the Windows Portable Executable (PE) format to resolve exported function addresses from loaded DLL images. Supports both PE32 (32-bit) and PE32+ (64-bit) formats, including forwarded exports.
+Runtime PE format parsing to resolve exported function addresses from loaded DLL images. Handles PE32 (32-bit) and PE32+ (64-bit) formats, including forwarded exports with recursive module resolution.
 
 ---
 

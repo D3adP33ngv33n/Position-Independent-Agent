@@ -2,7 +2,7 @@
 
 # Beacon
 
-The top-level application layer — connects to a relay server over WebSocket (via TLS 1.3 over HTTPS) and executes commands received from the operator.
+Top-level application layer — connects to a relay server over WebSocket (TLS 1.3 over HTTPS) and dispatches commands from the operator.
 
 ## Architecture
 
@@ -40,7 +40,7 @@ The top-level application layer — connects to a relay server over WebSocket (v
 
 ## Connection Pipeline
 
-The beacon establishes connectivity through a full protocol stack — all implemented in-process:
+Full protocol stack, all implemented in-process:
 
 ```
 1. DNS-over-HTTPS resolution
@@ -62,7 +62,7 @@ The beacon establishes connectivity through a full protocol stack — all implem
    └─ Binary frames with command dispatch
 ```
 
-Every layer (DNS, TLS, HTTP, WebSocket) is implemented from scratch in `src/lib/` — no OpenSSL, no libcurl, no system TLS.
+Every layer implemented from scratch in `src/lib/` — no OpenSSL, no libcurl, no system TLS.
 
 ## Command Dispatch
 
@@ -119,7 +119,7 @@ Screen::Capture(device, rgbBuffer)     → raw RGB pixels
   WebSocket::Send(jpegData)            → send compressed frame
 ```
 
-The JPEG encoder streams output through a callback — no intermediate buffer holding the full compressed image.
+The JPEG encoder streams output via callback — no intermediate buffer for the full compressed image.
 
 ### Command: Shell (Write/Read)
 
@@ -149,7 +149,7 @@ EFI_STATUS EfiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 }
 ```
 
-The EFI context is stored in a CPU register (not a global variable — there are no data sections) so all subsequent code can access `ImageHandle` and `SystemTable`.
+The EFI context is stored in a CPU register (not a global — no data sections exist) so all subsequent code can access `ImageHandle` and `SystemTable`.
 
 ### POSIX
 
@@ -172,4 +172,4 @@ void entry_point() {
 
 ## Reconnection
 
-On WebSocket disconnection, the beacon re-enters the full connection pipeline (DNS → TCP → TLS → HTTP → WebSocket). Each reconnection attempt goes through the complete stack — there's no cached state from previous connections.
+On WebSocket disconnection, the beacon re-enters the full connection pipeline (DNS → TCP → TLS → HTTP → WebSocket). No cached state from previous connections — each reconnection is a clean start.

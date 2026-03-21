@@ -4,7 +4,7 @@
 
 **Files:** [`ntdll.h`](ntdll.h), [`ntdll.cc`](ntdll.cc)
 
-The `NTDLL` class wraps the Windows NT Native API functions exported by ntdll.dll. These are the lowest-level user-mode API functions — they are thin stubs that transition into the kernel via syscalls. All higher-level Win32 APIs (kernel32, user32, etc.) are built on top of these.
+The `NTDLL` class wraps NT Native API functions exported by ntdll.dll — the lowest-level user-mode API, consisting of thin stubs that transition into the kernel via syscalls. All Win32 APIs (kernel32, user32, etc.) are built on top of these.
 
 ---
 
