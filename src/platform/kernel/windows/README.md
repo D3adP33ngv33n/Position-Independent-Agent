@@ -13,41 +13,13 @@ Position-independent Windows NT kernel layer providing direct system call dispat
 | **ARM64** | `X18 + 0x60` | `BLR` to ntdll `SVC #N; RET` stub | `X0-X7` + stack |
 | **ARM32** | `R9 + 0x30` | `BLX` to ntdll `SVC #1` stub (Thumb-2) | `R0-R3` + stack |
 
-## Documentation
+## Deep Dives
 
-Detailed documentation for each subsystem:
-
-| # | Document | Description | Source Files |
-|---|---|---|---|
-| 1 | [PEB Walking & Module Resolution](PEB_WALKING.md) | TEB/PEB access, loader data structures, `InMemoryOrderModuleList` traversal, DJB2 hash matching, fast/slow path module resolution | `peb.h`, `peb.cc` |
-| 2 | [PE Format Parsing](PE_PARSING.md) | DOS/NT headers, export directory, name-to-ordinal-to-RVA resolution, forwarded export handling, PE32 vs PE32+ differences | `pe.h`, `pe.cc` |
-| 3 | [Indirect Syscall Dispatch](INDIRECT_SYSCALLS.md) | SSN resolution, ntdll stub scanning, gadget discovery, per-architecture inline assembly dispatch (0-14 args), `ResolveSyscall` macro | `system.h`, `system.cc`, `system.*.h` |
-| 4 | [NT Native API Wrappers](NTDLL_WRAPPERS.md) | 23 `Zw*` syscall wrappers, 5 `Rtl*` runtime library functions, dual-path dispatch pattern, NTSTATUS error handling | `ntdll.h`, `ntdll.cc` |
-| 5 | [Win32 API Wrappers](WIN32_WRAPPERS.md) | Kernel32 (process/pipe), User32 (display enumeration), GDI32 (screen capture), dynamic resolution pattern | `kernel32.*`, `user32.*`, `gdi32.*` |
-
-## File Map
-
-```
-windows/
-├── peb.h / peb.cc             # PEB walking and module resolution
-├── pe.h / pe.cc               # PE format parsing and export resolution
-├── system.h / system.cc       # SSN resolution and syscall dispatch core
-├── system.x86_64.h            # x86_64 indirect syscall inline assembly
-├── system.i386.h              # i386 indirect syscall inline assembly
-├── system.aarch64.h           # ARM64 indirect syscall inline assembly
-├── system.armv7a.h            # ARM32 indirect syscall inline assembly
-├── ntdll.h / ntdll.cc         # NT Native API (Zw*/Rtl*) wrappers
-├── kernel32.h / kernel32.cc   # Win32 kernel32.dll wrappers
-├── user32.h / user32.cc       # Win32 user32.dll wrappers
-├── gdi32.h / gdi32.cc         # Win32 gdi32.dll wrappers
-├── windows_types.h            # NT fundamental types and constants
-├── platform_result.h          # NTSTATUS → Result<T, Error> conversion
-├── PEB_WALKING.md             # PEB structures, list traversal, TEB registers
-├── PE_PARSING.md              # DOS/NT headers, export resolution, forwarded exports
-├── INDIRECT_SYSCALLS.md       # SSN resolution, gadget scanning, per-arch dispatch
-├── NTDLL_WRAPPERS.md          # All Zw*/Rtl* functions, dual-path dispatch pattern
-└── WIN32_WRAPPERS.md          # Kernel32, User32, GDI32 wrapper APIs
-```
+- [PEB Walking & Module Resolution](PEB_WALKING.md) — TEB register access per architecture, `InMemoryOrderModuleList` traversal via `CONTAINING_RECORD`, DJB2 hash matching, fast/slow path with `LdrLoadDll` fallback
+- [PE Format Parsing](PE_PARSING.md) — DOS/NT headers, export directory three-array system, name-to-ordinal-to-RVA resolution, forwarded export handling with recursive module resolution, PE32 vs PE32+ offset differences
+- [Indirect Syscall Dispatch](INDIRECT_SYSCALLS.md) — Runtime SSN resolution by counting `Zw*` exports, ntdll stub scanning for `syscall;ret` gadget (`0F 05 C3`), i386 old/new stub formats, ARM64 `SVC+RET` pair discovery, `System::Call` overloads for 0-14 arguments
+- [NT Native API Wrappers](NTDLL_WRAPPERS.md) — 23 `Zw*` syscall wrappers with dual-path dispatch (indirect syscall primary, direct call fallback), 5 `Rtl*` functions, `LdrLoadDll`, NTSTATUS error codes
+- [Win32 API Wrappers](WIN32_WRAPPERS.md) — Kernel32 process creation with pipe plumbing, User32 display enumeration, GDI32 screen capture pipeline (`BitBlt` → `GetDIBits`), dynamic resolution via DJB2 hash
 
 ## How It All Connects
 

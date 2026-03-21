@@ -27,30 +27,26 @@ Cross-platform abstraction layer providing OS-independent interfaces for I/O, ne
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-## Module Documentation
+## Modules
 
-| # | Module | README | Purpose |
-|---|---|---|---|
-| 1 | [Console](console/) | [console/README.md](console/README.md) | Text output, UTF-16/8 conversion, ANSI-colored logging |
-| 2 | [Filesystem](fs/) | [fs/README.md](fs/README.md) | RAII file I/O, directories, path manipulation, directory enumeration |
-| 3 | [Memory](memory/) | [memory/README.md](memory/README.md) | Virtual memory allocation, global operator new/delete |
-| 4 | [Screen](screen/) | [screen/README.md](screen/README.md) | Display enumeration, framebuffer capture |
-| 5 | [Socket](socket/) | [socket/README.md](socket/README.md) | TCP stream sockets (IPv4/IPv6), Windows AFD, UEFI TCP |
-| 6 | [System](system/) | [system/README.md](system/README.md) | DateTime, Random, MachineID, Environment, Pipe, Process, PTY, Shell |
+- [Console](console/README.md) — Streaming UTF-16→UTF-8 conversion, `ZwWriteFile` vs `WriteConsoleW`, ANSI-colored structured logging
+- [Filesystem](fs/README.md) — RAII file I/O, 14-variant `struct stat` offsets, Solaris missing `d_type`, Windows drive bitmask enumeration
+- [Memory](memory/README.md) — Size-header trick for `munmap`, `mmap2` page-shift, FreeBSD i386 inline asm for 64-bit `off_t`
+- [Screen](screen/README.md) — Linux three-tier capture (X11→DRM→fbdev), macOS fork-based CoreGraphics probing, UEFI GOP
+- [Socket](socket/README.md) — Windows AFD driver networking, i386 `socketcall` multiplexer, UEFI busy-poll TCP, BSD `sin_len`
+- [System](system/README.md) — 5 PTY creation variants, PEB environment walking, SMBIOS UUID, `fork`+`execve` process model
 
-## Kernel Interface Documentation
+## Kernel Interfaces
 
-| # | Platform | README | Architectures |
-|---|---|---|---|
-| 1 | [Windows](kernel/windows/) | [kernel/windows/README.md](kernel/windows/README.md) | x86_64, i386, ARM64, ARM32 |
-| 2 | [Linux](kernel/linux/) | [kernel/linux/README.md](kernel/linux/README.md) | x86_64, i386, AArch64, ARMv7-A, RV64, RV32, MIPS64 |
-| 3 | [FreeBSD](kernel/freebsd/) | [kernel/freebsd/README.md](kernel/freebsd/README.md) | x86_64, i386, AArch64, RISC-V 64 |
-| 4 | [macOS](kernel/macos/) | [kernel/macos/README.md](kernel/macos/README.md) | x86_64, AArch64 |
-| 5 | [iOS](kernel/ios/) | [kernel/ios/README.md](kernel/ios/README.md) | AArch64 |
-| 6 | [Android](kernel/android/) | [kernel/android/README.md](kernel/android/README.md) | (inherits Linux) |
-| 7 | [Solaris](kernel/solaris/) | [kernel/solaris/README.md](kernel/solaris/README.md) | x86_64, i386, AArch64 |
-| 8 | [UEFI](kernel/uefi/) | [kernel/uefi/README.md](kernel/uefi/README.md) | x86_64, AArch64 |
-| 9 | [NetBSD](kernel/netbsd/) | [kernel/netbsd/README.md](kernel/netbsd/README.md) | Not implemented |
+- [Windows](kernel/windows/README.md) — PEB walking, PE parsing, indirect syscalls, NTDLL/Win32 wrappers (x86_64, i386, ARM64, ARM32)
+- [Linux](kernel/linux/README.md) — 7 architectures, MIPS `$a3` error flag, i386 EBP save/restore, per-arch syscall numbers
+- [FreeBSD](kernel/freebsd/README.md) — Carry-flag error model, RDX `rval[1]` clobbering, RISC-V T0 error indicator (x86_64, i386, AArch64, RV64)
+- [macOS](kernel/macos/README.md) — `svc #0x80` + X16, Mach traps, dyld ASLR slide + Mach-O parsing (x86_64, AArch64)
+- [Solaris](kernel/solaris/README.md) — `int $0x91` SVR4 trap, multiplexed syscalls, `getdents` SIGSYS quirk (x86_64, i386, AArch64)
+- [UEFI](kernel/uefi/README.md) — Protocol function tables, `WRMSR` GS_BASE, Microsoft x64 ABI, NOINLINE GUID trick (x86_64, AArch64)
+- [iOS](kernel/ios/README.md) — Same XNU kernel as macOS (AArch64)
+- [Android](kernel/android/README.md) — Same Linux kernel, SELinux/Seccomp differences
+- [NetBSD](kernel/netbsd/README.md) — Not yet implemented
 
 ## Platform Support Matrix
 
