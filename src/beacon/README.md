@@ -81,28 +81,6 @@ CommandHandler handlers[] = {
 };
 ```
 
-### Command: GetSystemInfo
-
-Returns the agent's identity to the operator. The response contains the `SystemInfo` struct followed by `AgentBuildInfo`:
-
-```
-┌──────────────────────────────────────────────────────┐
-│ StatusCode (UINT32)                                   │
-├──────────────────────────────────────────────────────┤
-│ SystemInfo                                            │
-│   MachineUUID  [16 bytes]   ← runtime (SMBIOS/etc)  │
-│   Hostname     [256 bytes]  ← runtime (env var)      │
-│   Architecture [32 bytes]   ← compile-time constant  │
-│   Platform     [32 bytes]   ← compile-time constant  │
-├──────────────────────────────────────────────────────┤
-│ AgentBuildInfo                                        │
-│   BuildNumber  [UINT32]     ← build system injected  │
-│   CommitHash   [9 bytes]    ← build system injected  │
-└──────────────────────────────────────────────────────┘
-```
-
-Architecture and Platform are determined at compile time from `ARCHITECTURE_*` / `PLATFORM_*` defines — the agent reports the OS and arch it was **built** for, not the runtime OS version. No `uname()`, `GetVersionEx()`, or similar version-detection syscalls are used.
-
 ### Command: GetScreenshot
 
 The most complex command — chains multiple subsystems:

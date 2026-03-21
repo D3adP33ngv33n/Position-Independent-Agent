@@ -233,58 +233,6 @@ Windows lacks PTY support, so three separate anonymous pipes handle stdin, stdou
 
 End-of-prompt detection: `'>'` on Windows (cmd.exe), `'$'` on POSIX (sh).
 
-## System Information
-
-### Compile-Time Identity
-
-`GetSystemInfo` populates a `SystemInfo` struct with host-identifying data. Critically, the **Architecture** and **Platform** fields are **compile-time constants** — the agent reports what it was *built* for, not the OS version running on the target:
-
-```c
-struct SystemInfo {
-    UUID  MachineUUID;        // Hardware/OS-level unique identifier
-    CHAR  Hostname[256];      // Machine hostname
-    CHAR  Architecture[32];   // Compile-time: "x86_64", "aarch64", "armv7a", etc.
-    CHAR  Platform[32];       // Compile-time: "windows", "linux", "macos", etc.
-};
-```
-
-There is **no runtime OS version detection** — no `uname()`, no `GetVersionEx()`, no `RtlGetVersion()`. The Architecture string comes from the `ARCHITECTURE_*` preprocessor define, and the Platform string from the `PLATFORM_*` define, both set by the build system at compile time.
-
-### Architecture Strings
-
-| Define | String |
-|---|---|
-| `ARCHITECTURE_X86_64` | `"x86_64"` |
-| `ARCHITECTURE_I386` | `"i386"` |
-| `ARCHITECTURE_AARCH64` | `"aarch64"` |
-| `ARCHITECTURE_ARMV7A` | `"armv7a"` |
-| `ARCHITECTURE_RISCV64` | `"riscv64"` |
-| `ARCHITECTURE_RISCV32` | `"riscv32"` |
-| `ARCHITECTURE_MIPS64` | `"mips64"` |
-
-### Platform Strings
-
-| Define | String |
-|---|---|
-| `PLATFORM_WINDOWS` | `"windows"` |
-| `PLATFORM_LINUX` | `"linux"` |
-| `PLATFORM_MACOS` | `"macos"` |
-| `PLATFORM_ANDROID` | `"android"` |
-| `PLATFORM_IOS` | `"ios"` |
-| `PLATFORM_FREEBSD` | `"freebsd"` |
-| `PLATFORM_SOLARIS` | `"solaris"` |
-| `PLATFORM_UEFI` | `"uefi"` |
-
-### Hostname Retrieval
-
-The hostname is the only runtime-queried field (besides UUID):
-
-| Platform | Source | Fallback |
-|---|---|---|
-| **Windows** | `COMPUTERNAME` environment variable (PEB) | `"unknown"` |
-| **Linux/macOS/FreeBSD/Solaris/Android** | `HOSTNAME` environment variable | `/etc/hostname` file → `"unknown"` |
-| **UEFI** | — | `"unknown"` (no hostname concept) |
-
 ## Platform Support
 
 | Component | Windows | POSIX | UEFI |
