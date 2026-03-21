@@ -1,3 +1,5 @@
+[< Back to Platform](../../README.md) | [< Back to Project Root](../../../../README.md)
+
 # Windows NT Kernel Interface
 
 Position-independent Windows NT kernel layer providing direct system call dispatch, PEB-based module resolution, PE export parsing, and Win32 API wrappers — all without any dependency on the Windows SDK, CRT, or static import tables.

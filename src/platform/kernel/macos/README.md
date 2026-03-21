@@ -1,3 +1,5 @@
+[< Back to Platform](../../README.md) | [< Back to Project Root](../../../../README.md)
+
 # macOS (XNU) Kernel Interface
 
 Position-independent macOS/XNU syscall layer for **x86_64** and **AArch64** (Apple Silicon). Combines BSD syscalls, Mach kernel traps, and a custom dyld framework resolution system that parses Mach-O binaries to locate `dlopen`/`dlsym` at runtime.

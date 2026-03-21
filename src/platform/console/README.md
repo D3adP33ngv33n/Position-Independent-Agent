@@ -1,3 +1,5 @@
+[< Back to Platform](../README.md) | [< Back to Project Root](../../../README.md)
+
 # Console I/O
 
 Platform-independent text output and structured logging, implemented directly over kernel syscalls without any CRT dependency.

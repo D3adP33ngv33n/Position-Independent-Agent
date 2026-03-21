@@ -1,3 +1,5 @@
+[< Back to Platform](../../README.md) | [< Back to Project Root](../../../../README.md)
+
 # NetBSD Kernel Interface
 
 **Status: Not Implemented**

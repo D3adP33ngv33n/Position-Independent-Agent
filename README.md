@@ -226,6 +226,7 @@ Compiles to fully position-independent, zero-dependency binaries that communicat
 - [Introduction](#introduction)
 - [Features](#features)
 - [Architecture](#architecture)
+- [Documentation](#documentation)
 - [Common Problems and Solutions](#common-problems-and-solutions)
 - [Build System](#build-system)
 - [Building](#building)
@@ -344,7 +345,7 @@ src/
 
 All system interaction is through direct syscalls (NT Native API on Windows, inline assembly on POSIX, Boot Services on UEFI). A custom LLVM pass ([pic-transform](tools/pic-transform/)) eliminates data sections at compile time, ensuring only a `.text` section in the final binary.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full project structure and source tree layout.
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the full project structure and source tree layout.
 
 ## Project Structure
 
@@ -354,16 +355,70 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full project structure and source
 ├── cmake/                   # Build system (toolchain, cross-compilation, PIC verification)
 ├── src/
 │   ├── core/               # Platform-independent primitives
-│   ├── platform/            # OS and architecture-specific implementations
-│   ├── lib/                 # High-level libraries (crypto, networking, image)
-│   ├── beacon/              # Agent command handlers and WebSocket loop
+│   ├── platform/            # OS abstraction: syscalls, allocator, console, file system, sockets, screen, processes
+│   ├── lib/                 # Crypto (SHA-2, ChaCha20, ECC), TLS 1.3, HTTP, DNS, WebSocket, JPEG encoder
+│   ├── beacon/              # Agent: command dispatcher, shell, screen capture
 │   └── entry_point.cc       # Platform entry point
 ├── tests/                   # Test suite (31 test suites across all layers)
 └── tools/
     ├── pic-transform/       # Custom LLVM pass for PIC enforcement
-    ├── poly-engine/         # Polymorphic engine
     └── pyloader/            # Cross-platform shellcode loader (Python)
 ```
+
+---
+
+## Documentation
+
+In-depth technical documentation for every layer of the project. Each document explains the **techniques and internals** — how PEB walking traverses loader data structures, how indirect syscalls find gadgets in ntdll, how the LLVM pass eliminates data sections, and so on.
+
+> **[Source Architecture Overview](src/README.md)** — 4-layer architecture diagram, full documentation index, how position independence is achieved
+
+### Core (Layer 1) — [src/core/](src/core/README.md)
+
+Zero-dependency foundations. The [core documentation](src/core/README.md) covers build-unique DJB2 seeding via FNV-1a hashing of `__DATE__`, branchless Base64 encoding without lookup tables, UTF-8/UTF-16 conversion with surrogate pair handling, word-at-a-time optimized `memset`/`memcpy` implementations, the xorshift64 PRNG with hardware seed sources (`RDTSC`, `CNTVCT_EL0`, `RDTIME`), and the zero-cost `Result<T,E>` tagged union.
+
+### Platform (Layer 2) — [src/platform/](src/platform/README.md)
+
+OS abstraction layer with [full platform support matrix](src/platform/README.md). Each module has its own documentation:
+
+- **[Console I/O](src/platform/console/README.md)** — Streaming UTF-16 to UTF-8 codepoint-by-codepoint conversion with 256-byte buffer amortization; Windows dual-path output (`ZwWriteFile` for narrow, `WriteConsoleW` for wide); UEFI `EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL`; ANSI-colored structured logging with compile-time elimination
+- **[Filesystem](src/platform/fs/README.md)** — The 14-variant `struct stat` offset problem across platforms and architectures; Solaris's missing `d_type` field requiring per-entry `fstatat`; Windows drive enumeration via process device map bitmask; UEFI `NOINLINE` GUID construction to prevent `.rdata` constant folding; RISC-V QEMU `O_DIRECTORY` translation bug workaround
+- **[Memory Allocation](src/platform/memory/README.md)** — The size-header trick (prepending `USIZE` to `mmap` allocations so `munmap` works without caller-supplied size); `mmap2` page-shift on 32-bit Linux; FreeBSD i386 inline assembly hack for 64-bit `off_t` stack parameter
+- **[Screen Capture](src/platform/screen/README.md)** — Linux three-tier fallback chain (X11 protocol → DRM dumb buffers → fbdev); GPU-composited scanout detection via all-black buffer check; macOS `fork()`-based crash isolation for CoreGraphics on headless systems; Retina display scaling; Solaris `/dev/fb` framebuffer
+- **[TCP Sockets](src/platform/socket/README.md)** — Windows AFD driver networking (bypassing Winsock via `\\Device\\Afd\\Endpoint` with IOCTL encoding `(DeviceType << 12) | (FunctionCode << 2) | Method`); Linux i386 `socketcall` multiplexer packing arguments into arrays; UEFI busy-poll pseudo-async with `Stall(1ms)` loops; BSD `sin_len` sockaddr divergence; per-platform `AF_INET6` values (10/23/26/28/30)
+- **[System Utilities](src/platform/system/README.md)** — Five different PTY creation flows across POSIX platforms (Linux `TIOCSPTLCK`/`TIOCGPTN`, macOS `TIOCPTYGRANT`/`TIOCPTYGNAME`, FreeBSD `FIODGNAME`, Solaris STREAMS `I_STR` ioctls with device minor extraction); Windows PEB environment block walking with manual case-insensitive comparison; SMBIOS Type 1 UUID extraction via `NtQuerySystemInformation`
+
+### Kernel Interfaces (Layer 2) — [src/platform/kernel/](src/platform/README.md)
+
+Direct syscall dispatch for each operating system kernel:
+
+- **[Windows NT](src/platform/kernel/windows/README.md)** — PEB-based module resolution, PE export parsing, indirect syscall dispatch. Five deep-dive documents:
+  - [PEB Walking](src/platform/kernel/windows/docs/PEB_WALKING.md) — TEB register access per architecture (`GS:[0x60]`, `FS:[0x30]`, `X18+0x60`, `R9+0x30`), `InMemoryOrderModuleList` traversal, `CONTAINING_RECORD` macro, DJB2 hash matching, fast/slow path resolution with `LdrLoadDll` fallback
+  - [PE Parsing](src/platform/kernel/windows/docs/PE_PARSING.md) — DOS header → NT headers → export directory three-array system, name-to-ordinal-to-RVA resolution, forwarded export handling with recursive module resolution
+  - [Indirect Syscalls](src/platform/kernel/windows/docs/INDIRECT_SYSCALLS.md) — SSN resolution by counting `Zw*` exports with lower RVA, ntdll stub scanning for `syscall;ret` gadget (`0F 05 C3`), i386 old/new stub format handling (Win11 WoW64), ARM64 `SVC+RET` pair discovery, ARM32 Thumb-2 `SVC #1` with interworking bit
+  - [NTDLL Wrappers](src/platform/kernel/windows/docs/NTDLL_WRAPPERS.md) — 23 `Zw*` syscall wrappers with dual-path dispatch (indirect syscall primary, direct call fallback), 5 `Rtl*` runtime library functions, NTSTATUS error conversion
+  - [Win32 Wrappers](src/platform/kernel/windows/docs/WIN32_WRAPPERS.md) — Kernel32 process creation with pipe plumbing, User32 display enumeration, GDI32 screen capture pipeline, dynamic resolution via `ResolveExportAddress`
+- **[Linux](src/platform/kernel/linux/README.md)** — 7 architectures with per-architecture syscall tables; MIPS64 `$a3` error flag with mandatory branch delay slot `nop`; i386 EBP frame pointer save/restore for 6-argument syscalls; `"rm"` constraint workaround at `-O0`; `NOINLINE` for LTO miscompilation prevention
+- **[FreeBSD](src/platform/kernel/freebsd/README.md)** — BSD carry-flag error handling (`jnc/neg` pattern); RDX clobbering by `rval[1]` requiring `"+r"` output constraint; RISC-V T0 dual-purpose register (syscall number AND error indicator) with early-clobber `&` constraints; i386 stack-based argument passing with dummy return address
+- **[macOS/XNU](src/platform/kernel/macos/README.md)** — `svc #0x80` (not `#0`) with syscall number in `X16` (not `X8`); class 2 prefix (`0x2000000`); Mach traps with negative syscall numbers; custom 7-argument `mach_msg` assembly; dyld framework resolution via Mach IPC `TASK_DYLD_INFO` → Mach-O symbol table parsing → ASLR slide calculation
+- **[Solaris](src/platform/kernel/solaris/README.md)** — `int $0x91` SVR4 trap gate; multiplexed `forksys`/`pgrpsys` syscalls; `SOCK_STREAM`/`SOCK_DGRAM` swapped values; `AT_FDCWD = 0xffd19553`; `getdents` SIGSYS on 64-bit (must use 32-bit variant); legacy syscall removal in Solaris 11.4
+- **[UEFI](src/platform/kernel/uefi/README.md)** — Protocol function tables instead of syscalls; `WRMSR` to `IA32_GS_BASE` MSR for context storage (can't use `WRGSBASE` — firmware may not set `CR4.FSGSBASE`); `NOINLINE` GUID construction; Microsoft x64 ABI on x86_64; busy-poll pseudo-async networking; 11-step network initialization sequence
+- **[iOS](src/platform/kernel/ios/README.md)** — Same XNU kernel as macOS, re-exports all definitions
+- **[Android](src/platform/kernel/android/README.md)** — Same Linux kernel, documents SELinux/Seccomp-BPF behavioral differences
+- **[NetBSD](src/platform/kernel/netbsd/README.md)** — Not yet implemented, requirements documented
+
+### Libraries (Layer 3) — [src/lib/](src/lib/README.md)
+
+The [library documentation](src/lib/README.md) covers traits-based SHA-2 template design (single `SHABase<Traits>` for SHA-256 and SHA-384); fully branchless ChaCha20-Poly1305 with 26-bit limb Poly1305 accumulator; constant-time ECC Montgomery ladder with Jacobian coordinates and curve-specific fast reduction for NIST primes; complete TLS 1.3 handshake with HKDF key schedule; DNS-over-HTTPS over the TLS client; WebSocket RFC 6455 with client masking and continuation frame reassembly; and Arai-Agui-Nakajima fast DCT for JPEG encoding with streaming callback output.
+
+### Beacon (Layer 4) — [src/beacon/](src/beacon/README.md)
+
+The [beacon documentation](src/beacon/README.md) covers the full connection pipeline (DNS-over-HTTPS → TCP → TLS 1.3 → HTTP upgrade → WebSocket), command dispatch via function pointer table, per-platform entry point initialization (`force_align_arg_pointer` on x86_64 POSIX, UEFI watchdog disable, context register storage), and streaming JPEG screenshots over WebSocket.
+
+### Tools
+
+- **[PIC Transform](tools/pic-transform/README.md)** — Custom LLVM Module pass that converts string literals into stack `alloca` + word-packed immediate stores with register barriers (`asm("": "+r"(val))`) to defeat optimizer re-coalescing; floating-point constants into integer bitcasts; function pointers into PC-relative assembly
+- **[Python Loader](tools/pyloader/README.md)** — Cross-platform shellcode loader for testing
 
 ---
 

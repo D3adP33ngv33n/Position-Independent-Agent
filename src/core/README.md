@@ -1,3 +1,5 @@
+[< Back to Source](../README.md) | [< Back to Project Root](../../README.md)
+
 # Core Libraries
 
 Zero-dependency foundations: hashing, encoding, strings, memory, math, type system, and formatting — all implemented without any CRT or standard library.

@@ -1,3 +1,5 @@
+[< Back to Platform](../../README.md) | [< Back to Project Root](../../../../README.md)
+
 # Solaris Kernel Interface
 
 Position-independent Solaris/illumos syscall layer supporting **3 architectures**. Solaris has unique syscall conventions inherited from SVR4 — including `int $0x91` on i386, multiplexed process/group syscalls, and aggressive legacy syscall removal in Solaris 11.4.

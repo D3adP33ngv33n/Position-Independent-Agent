@@ -1,3 +1,5 @@
+[< Back to Source](../README.md) | [< Back to Project Root](../../README.md)
+
 # Platform Layer
 
 Cross-platform abstraction layer providing OS-independent interfaces for I/O, networking, memory, display, and process management. Every implementation uses **direct syscalls and firmware protocols** — no CRT, no SDK, no libc dependencies.

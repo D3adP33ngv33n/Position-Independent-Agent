@@ -1,3 +1,5 @@
+[< Back to Source](../README.md) | [< Back to Project Root](../../README.md)
+
 # Beacon
 
 The top-level application layer — connects to a relay server over WebSocket (via TLS 1.3 over HTTPS) and executes commands received from the operator.

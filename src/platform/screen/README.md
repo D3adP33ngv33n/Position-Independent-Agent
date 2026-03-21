@@ -1,3 +1,5 @@
+[< Back to Platform](../README.md) | [< Back to Project Root](../../../README.md)
+
 # Screen Capture
 
 Platform-independent display enumeration and framebuffer capture. Each platform uses a completely different graphics subsystem — this module abstracts five fundamentally different capture mechanisms behind a single `Screen::Capture()` interface.

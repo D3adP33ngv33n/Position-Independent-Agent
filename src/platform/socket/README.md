@@ -1,3 +1,5 @@
+[< Back to Platform](../README.md) | [< Back to Project Root](../../../README.md)
+
 # TCP Socket Networking
 
 Platform-independent TCP stream sockets supporting IPv4 and IPv6. Each platform uses a fundamentally different networking interface — POSIX sockets, the Windows AFD driver, or UEFI TCP protocols.

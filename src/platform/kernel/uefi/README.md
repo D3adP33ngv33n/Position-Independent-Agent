@@ -1,3 +1,5 @@
+[< Back to Platform](../../README.md) | [< Back to Project Root](../../../../README.md)
+
 # UEFI Firmware Interface
 
 Position-independent UEFI 2.10 interface for **x86_64** and **AArch64**. Fundamentally different from every other platform — UEFI has no syscalls, no kernel transitions, and no process model. Everything is done through **firmware-provided function pointer tables** called protocols.

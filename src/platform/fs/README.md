@@ -1,3 +1,5 @@
+[< Back to Platform](../README.md) | [< Back to Project Root](../../../README.md)
+
 # Filesystem Operations
 
 Platform-independent filesystem abstraction for file I/O, directory enumeration, and path manipulation. Every operation goes through raw kernel syscalls — no `fopen`, no `opendir`, no `FindFirstFile`.

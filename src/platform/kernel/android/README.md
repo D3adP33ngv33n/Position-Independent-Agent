@@ -1,3 +1,5 @@
+[< Back to Platform](../../README.md) | [< Back to Project Root](../../../../README.md)
+
 # Android Kernel Interface
 
 Position-independent Android syscall layer. Re-exports Linux kernel definitions since Android runs the Linux kernel with identical syscall ABIs.

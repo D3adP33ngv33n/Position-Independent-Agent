@@ -1,3 +1,5 @@
+[< Back to Project Root](../README.md)
+
 # Source Architecture
 
 The codebase is organized in four layers, each building on the one below. No layer may depend on a higher layer.

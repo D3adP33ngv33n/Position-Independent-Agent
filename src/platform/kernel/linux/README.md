@@ -1,3 +1,5 @@
+[< Back to Platform](../../README.md) | [< Back to Project Root](../../../../README.md)
+
 # Linux Kernel Interface
 
 Position-independent Linux syscall layer supporting **7 architectures** — the widest architecture coverage of any platform in the project. Each architecture has its own trap instruction, register convention, syscall number table, and in some cases fundamentally different error handling.
