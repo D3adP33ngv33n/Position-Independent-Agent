@@ -89,7 +89,18 @@ a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6
 
 The runtime reads this file and parses the hex string into a UUID.
 
-**Android fallback:** Tries `/etc/machine-id` first, falls back to `/proc/sys/kernel/random/boot_id` (regenerated each boot).
+**Linux/Android fallback:** If `/etc/machine-id` is missing (e.g., in Docker containers), falls back to `/proc/sys/kernel/random/boot_id` (regenerated each boot).
+
+### macOS/iOS: sysctl kern.uuid
+
+The machine UUID is the IOPlatformUUID — a hardware-level identifier that persists across OS reinstalls. It is queried via `sysctl`:
+
+```
+1. sysctl({0, 3}, "kern.uuid")  → resolve name to MIB path
+2. sysctl(mib, miblen, buf)     → read UUID string
+```
+
+The name-to-MIB translation is needed because `kern.uuid` has a dynamically assigned OID (`OID_AUTO`).
 
 ## Environment Variables
 
@@ -251,7 +262,7 @@ End-of-prompt detection: `'>'` on Windows (cmd.exe), `'$'` on POSIX (sh).
 |---|---|---|---|
 | DateTime | `NtQuerySystemTime` | `clock_gettime` | `RuntimeServices→GetTime` |
 | Random | `RDTSC` seed | `RDTSC`/`CNTVCT`/`RDTIME` seed | Same |
-| MachineID | SMBIOS UUID | `/etc/machine-id` | Stub |
+| MachineID | SMBIOS UUID | `/etc/machine-id`/`sysctl`/`boot_id` | Stub |
 | Environment | PEB block walk | `/proc/self/environ` | Stub |
 | Hostname | `COMPUTERNAME` env var | env/file/`sysctl`/`utssys` | Stub |
 | OSVersion | PEB version fields | `uname`/`sysctl`/`utssys`+`/etc/release` | `"uefi"` |
