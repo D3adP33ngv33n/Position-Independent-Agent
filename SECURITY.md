@@ -20,7 +20,7 @@ If you discover a security vulnerability in PIA, please report it **privately** 
 ### How to Report
 
 1. **Email:** Send a detailed report to the project maintainer (see GitHub profile for contact information)
-2. **GitHub Security Advisories:** Use [GitHub's private vulnerability reporting](https://github.com/mrzaxaryan/Position-Independent-Agent/security/advisories/new) to submit a confidential advisory
+2. **GitHub Security Advisories:** Use [GitHub's private vulnerability reporting](https://github.com/nostdlib/Position-Independent-Agent/security/advisories/new) to submit a confidential advisory
 
 ### What to Include
 

@@ -46,7 +46,7 @@ try:
 except AttributeError:
     pass  # Python < 2.7.9 / 3.4.3: verification not enabled anyway
 
-REPO = "mrzaxaryan/Position-Independent-Agent"
+REPO = "nostdlib/Position-Independent-Agent"
 
 # =============================================================================
 # Logging

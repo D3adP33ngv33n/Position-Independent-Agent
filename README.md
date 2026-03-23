@@ -60,7 +60,7 @@ This project solves that: a full C++23 codebase that compiles to position-indepe
 ## Building
 
 ```bash
-git clone https://github.com/mrzaxaryan/Position-Independent-Agent.git
+git clone https://github.com/nostdlib/Position-Independent-Agent.git
 cd Position-Independent-Agent
 
 # Build beacon (default)
@@ -128,7 +128,7 @@ src/
 
 All system interaction is through direct syscalls (NT Native API on Windows, inline assembly on POSIX, Boot Services on UEFI). A custom LLVM pass ([pic-transform](tools/pic-transform/)) eliminates data sections at compile time, ensuring only a `.text` section in the final binary.
 
-See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the full project structure and source tree layout.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full project structure and source tree layout.
 
 ## Project Structure
 
@@ -307,7 +307,7 @@ A multi-stage pipeline guarantees position-independence:
 
 `-fno-jump-tables` is critical — without it, `switch` statements generate jump tables in `.rdata`, breaking position-independence.
 
-**3. Post-Build Verification:** The build system verifies the final binary contains no data sections (`.rdata`, `.rodata`, `.data`, `.bss`, `.got`, `.plt`) via `cmake/VerifyPICMode.cmake`.
+**3. Post-Build Verification:** The build system verifies the final binary contains no data sections (`.rdata`, `.rodata`, `.data`, `.bss`, `.got`, `.plt`) via `cmake/scripts/VerifyPICMode.cmake`.
 
 > **Debug builds:** `-O0`/`-Og` do not pass PIC verification — the compiler preserves data sections that higher optimization levels eliminate. Debug presets work for local development with standard tooling but produce non-PIC binaries. Verification is automatically skipped for debug builds.
 
@@ -535,4 +535,4 @@ Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-**GNU Affero General Public License v3.0** (AGPL-3.0) — see [LICENSE](LICENSE). All derivative works, including network services, must be released under the same license. For proprietary licensing, contact [mrzaxaryan](https://github.com/mrzaxaryan).
+**GNU Affero General Public License v3.0** (AGPL-3.0) — see [LICENSE](LICENSE). All derivative works, including network services, must be released under the same license. For proprietary licensing, contact [nostdlib](https://github.com/nostdlib).

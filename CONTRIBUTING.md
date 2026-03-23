@@ -31,7 +31,7 @@ Thank you for your interest in contributing to PIA! This guide covers everything
 
 ```bash
 # Clone with submodules
-git clone https://github.com/mrzaxaryan/Position-Independent-Agent.git
+git clone https://github.com/nostdlib/Position-Independent-Agent.git
 cd Position-Independent-Agent
 
 # Build
@@ -128,13 +128,16 @@ For more information, see the [VSCode WSL documentation](https://code.visualstud
 ├── cmake/                     # Build system (toolchain, cross-compilation, PIC verification)
 │   ├── Common.cmake           # Shared CMake functions
 │   ├── CompilerFlags.cmake    # Clang/LLVM flags (C++23, -nostdlib, PIC)
+│   ├── Logging.cmake          # Log level configuration
 │   ├── Options.cmake          # CMake options (BUILD_TESTS, ENABLE_LOGGING)
-│   ├── Toolchain.cmake        # Compiler detection
 │   ├── PICTransform.cmake     # pic-transform LLVM pass integration
+│   ├── PostBuild.cmake        # Post-build PIC verification step
 │   ├── Sources.cmake          # Source file collection & platform filtering
 │   ├── Target.cmake           # Executable definition & post-build verification
+│   ├── Toolchain.cmake        # Compiler detection
 │   ├── Triples.cmake          # LLVM target triple generation
 │   ├── platforms/             # Per-platform CMake modules (Windows, Linux, macOS, etc.)
+│   ├── scripts/               # Build helper scripts (PIC verification, binary extraction, ELF patching)
 │   └── data/                  # Linker scripts & function order files
 ├── src/
 │   ├── entry_point.cc         # Unified platform entry point
@@ -151,8 +154,7 @@ For more information, see the [VSCode WSL documentation](https://code.visualstud
 │   ├── start.cc               # Test harness entry point
 │   └── *_tests.h              # Individual test suites
 ├── tools/
-│   ├── pic-transform/         # Custom LLVM pass for PIC enforcement
-│   └── poly-engine/           # Polymorphic engine
+│   └── pic-transform/         # Custom LLVM pass for PIC enforcement
 └── loaders/
     ├── python/                # Cross-platform shellcode loader (Python)
     └── windows/
@@ -167,7 +169,7 @@ The project is a self-contained monorepo. The `cmake/` directory contains the fu
 
 The binary must contain **only** a `.text` section. No `.rdata`, `.rodata`, `.data`, or `.bss`. Verified automatically by the post-build step in `cmake/PostBuild.cmake`.
 
-The [pic-transform](https://github.com/mrzaxaryan/pic-transform) LLVM pass runs automatically during compilation and eliminates data sections by converting global constants (strings, floats, arrays) into stack-local immediate stores. This means you can write normal C++ string literals, float constants, and const arrays -- they are transformed automatically.
+The [pic-transform](tools/pic-transform/) LLVM pass runs automatically during compilation and eliminates data sections by converting global constants (strings, floats, arrays) into stack-local immediate stores. This means you can write normal C++ string literals, float constants, and const arrays -- they are transformed automatically.
 
 **Memory protection consequence:** Because the binary has no data sections, the agent can run entirely in **RX (read+execute)** memory — no writable code page is ever needed at runtime. Any change that reintroduces a data section breaks this guarantee.
 
@@ -301,7 +303,7 @@ Wire paths arrive as null-terminated UTF-16LE strings. Use `DecodeWirePath()` to
 
 ### Data Section Elimination (pic-transform)
 
-The [pic-transform](https://github.com/mrzaxaryan/pic-transform) LLVM pass automatically converts string literals, float/double constants, const arrays, and function pointer references into position-independent code during compilation. No special syntax or macros are needed.
+The [pic-transform](tools/pic-transform/) LLVM pass automatically converts string literals, float/double constants, const arrays, and function pointer references into position-independent code during compilation. No special syntax or macros are needed.
 
 ---
 
@@ -375,7 +377,7 @@ Test files are header-only (`tests/*_tests.h`) and use a lightweight test framew
 
 ### Pull Request Requirements
 
-- Use the [pull request template](pull_request_template.md)
+- Use the [pull request template](.github/pull_request_template.md)
 - **Report the binary size diff** - build the same preset before and after your change, then include the `.text` section size (exe and bin) in the PR description. Size regressions require justification; prefer `-Oz` builds for the comparison:
 
    ```bash

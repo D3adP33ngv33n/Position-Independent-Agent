@@ -72,7 +72,7 @@ cmake --build build
 ## Using as a Git submodule
 
 ```bash
-git submodule add https://github.com/mrzaxaryan/pic-transform.git
+git submodule add https://github.com/nostdlib/pic-transform.git
 ```
 
 Then in your CMakeLists.txt:
@@ -81,7 +81,7 @@ Then in your CMakeLists.txt:
 add_subdirectory(pic-transform)
 ```
 
-Or download a prebuilt binary from [Releases](https://github.com/mrzaxaryan/pic-transform/releases).
+Or download a prebuilt binary from [Releases](https://github.com/nostdlib/pic-transform/releases).
 
 ## How it works
 

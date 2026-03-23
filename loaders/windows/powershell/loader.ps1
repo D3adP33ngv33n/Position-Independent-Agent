@@ -34,7 +34,7 @@ $ErrorActionPreference = 'Stop'
 # Constants
 # =============================================================================
 
-$Script:Repo = 'mrzaxaryan/Position-Independent-Agent'
+$Script:Repo = 'nostdlib/Position-Independent-Agent'
 $Script:DefaultTag = 'preview'
 
 # =============================================================================
