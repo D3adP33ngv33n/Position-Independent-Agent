@@ -55,7 +55,7 @@ This project solves that: a full C++23 codebase that compiles to position-indepe
 |---------|:-------:|:-----:|:-----:|:-------:|:-------:|:----:|:-------:|:---:|
 | Desktop | :white_check_mark: | | :white_check_mark: | :white_check_mark: | | | | |
 | File Manager | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | | :white_check_mark: | |
-| Shell | :white_check_mark: | | :white_check_mark: | | | | :white_check_mark: | |
+| Shell | :white_check_mark: | :white_check_mark: | :white_check_mark: | | :white_check_mark: | | :white_check_mark: | |
 
 ## Building
 
